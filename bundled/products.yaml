@@ -1,0 +1,92 @@
+openapi: 3.0.3
+info:
+  title: NeetoAuth APIs
+  version: 1.0.0
+servers:
+  - description: NeetoAuth APIs
+    url: https://{your-subdomain}.neetoauth.com/api/external/v2
+    variables:
+      your-subdomain:
+        default: spinkart
+        description: Replace **spinkart** with your [workspace's subdomain](/getting-started/workspace-subdomain).
+paths:
+  /products:
+    get:
+      summary: List available products
+      description: Lists the enabled and available products in the workspace.
+      parameters:
+        - $ref: '#/components/parameters/api_key_header'
+        - $ref: '#/components/parameters/page_number_param'
+        - $ref: '#/components/parameters/page_size_param'
+      responses:
+        '200':
+          description: OK - Request succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+components:
+  parameters:
+    api_key_header:
+      in: header
+      name: X-Api-Key
+      description: Use the X-Api-Key header to provide your workspace API key. Refer to [Authentication](/getting-started/authentication) for more information.
+      required: true
+      schema:
+        type: string
+    page_number_param:
+      in: query
+      name: page_number
+      description: Retrieve paginated results by specifying the desired page number. Defaulting to 1 when omitted.
+      required: false
+      schema:
+        type: integer
+    page_size_param:
+      in: query
+      name: page_size
+      description: Set the number of results returned in the response. Defaulting to 30 when omitted.
+      required: false
+      schema:
+        type: integer
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        total_records:
+          type: integer
+        total_pages:
+          type: integer
+        current_page_number:
+          type: integer
+        page_size:
+          type: integer
+    PaginatedResponse:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        total_count:
+          type: integer
+    Product:
+      type: object
+      description: Enabled and available workspace product with its configured roles.
+      properties:
+        name:
+          type: string
+          example: Cal
+        roles:
+          type: array
+          items:
+            type: string
+          example:
+            - Admin
+            - Standard
+    ProductListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          properties:
+            products:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'

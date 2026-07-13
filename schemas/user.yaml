@@ -1,0 +1,108 @@
+# User object returned by list and create responses
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "oliver@example.com"
+        role:
+          type: string
+          example: "non_owner"
+        first_name:
+          type: string
+          example: "Oliver"
+        last_name:
+          type: string
+          example: "Smith"
+
+    UserApp:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Cal"
+        role:
+          type: string
+          example: "Admin"
+
+    CreateUserApp:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Product name returned by the [List available products](/api-reference/products/list) endpoint.
+          example: "Cal"
+        role:
+          type: string
+          description: Role returned in the product's roles list.
+          example: "Admin"
+      required:
+        - name
+        - role
+
+    UserWithApps:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            apps:
+              type: array
+              items:
+                $ref: "#/components/schemas/UserApp"
+              example:
+                - name: "Cal"
+                  role: "Admin"
+
+    CreateUserRequest:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+              description: Email of the user.
+              example: "oliver@example.com"
+            role:
+              type: string
+              description: Role of the user.
+              enum:
+                - owner
+                - non_owner
+              example: "non_owner"
+            first_name:
+              type: string
+              description: First name of the user. Defaults to "-" when omitted.
+              example: "Oliver"
+            last_name:
+              type: string
+              description: Last name of the user. Defaults to "-" when omitted.
+              example: "Smith"
+            apps:
+              type: array
+              description: Product roles to assign to the user.
+              items:
+                $ref: "#/components/schemas/CreateUserApp"
+          required:
+            - email
+            - role
+            - apps
+          description: >-
+            If the email belongs to a deactivated user, that user is
+            reactivated with the supplied attributes.
+      required:
+        - user
+
+    UserListResponse:
+      allOf:
+        - $ref: "../schemas/common.yaml#/components/schemas/PaginatedResponse"
+        - type: object
+          properties:
+            users:
+              type: array
+              items:
+                $ref: "#/components/schemas/User"

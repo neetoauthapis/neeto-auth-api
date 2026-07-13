@@ -1,0 +1,24 @@
+openapi: 3.0.3
+info:
+  title: NeetoAuth APIs
+  version: 1.0.0
+
+servers:
+  $ref: "../schemas/common.yaml#/servers"
+
+paths:
+  /products:
+    get:
+      summary: List available products
+      description: Lists the enabled and available products in the workspace.
+      parameters:
+        - $ref: "../schemas/common.yaml#/api_key_header"
+        - $ref: "../schemas/common.yaml#/page_number_param"
+        - $ref: "../schemas/common.yaml#/page_size_param"
+      responses:
+        "200":
+          description: OK - Request succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/product.yaml#/components/schemas/ProductListResponse"

@@ -1,0 +1,24 @@
+components:
+  schemas:
+    Product:
+      type: object
+      description: Enabled and available workspace product with its configured roles.
+      properties:
+        name:
+          type: string
+          example: "Cal"
+        roles:
+          type: array
+          items:
+            type: string
+          example: ["Admin", "Standard"]
+
+    ProductListResponse:
+      allOf:
+        - $ref: "../schemas/common.yaml#/components/schemas/PaginatedResponse"
+        - type: object
+          properties:
+            products:
+              type: array
+              items:
+                $ref: "#/components/schemas/Product"

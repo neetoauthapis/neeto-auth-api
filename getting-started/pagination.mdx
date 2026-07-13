@@ -22,13 +22,13 @@ Here's how to retrieve paginated results using cURL:
 <CodeGroup>
 ```bash cURL
 curl --request GET \
-  --url "https://{your-subdomain}.neetoauth.com/api/external/v2/team-members?page_number=2&page_size=25" \
+  --url "https://{your-subdomain}.neetoauth.com/api/external/v2/users?page_number=2&page_size=25" \
   --header 'X-Api-Key: your-api-key'
 ```
 
 ```javascript JavaScript
 const response = await fetch(
-  "https://{your-subdomain}.neetoauth.com/api/external/v2/team-members?page_number=2&page_size=25",
+  "https://{your-subdomain}.neetoauth.com/api/external/v2/users?page_number=2&page_size=25",
   {
     method: "GET",
     headers: {
@@ -45,7 +45,7 @@ console.log(data);
 ```python Python
 import requests
 
-url = "https://{your-subdomain}.neetoauth.com/api/external/v2/team-members"
+url = "https://{your-subdomain}.neetoauth.com/api/external/v2/users"
 params = {
     "page_number": 2,
     "page_size": 25
@@ -62,7 +62,7 @@ print(data)
 
 </CodeGroup>
 
-This retrieves the second page of team members, with 25 results per page.
+This retrieves the second page of users, with 25 results per page.
 
 ## Response Structure
 
@@ -70,15 +70,16 @@ Paginated responses include metadata about the pagination in JSON format:
 
 ```json Response Example
 {
-  "team_members": [
-    // ... array of team member objects
+  "users": [
+    // ... array of user objects
   ],
   "pagination": {
     "total_records": 150,
     "current_page_number": 2,
     "total_pages": 6,
     "page_size": 25
-  }
+  },
+  "total_count": 150
 }
 ```
 

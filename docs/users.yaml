@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: NeetoAuth APIs
+  version: 1.0.0
+
+servers:
+  $ref: "../schemas/common.yaml#/servers"
+
+paths:
+  /users:
+    get:
+      summary: List active users
+      description: Lists all active users in the workspace.
+      parameters:
+        - $ref: "../schemas/common.yaml#/api_key_header"
+        - $ref: "../schemas/common.yaml#/page_number_param"
+        - $ref: "../schemas/common.yaml#/page_size_param"
+      responses:
+        "200":
+          description: OK - Request succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/user.yaml#/components/schemas/UserListResponse"
+
+    post:
+      summary: Add a user
+      description: Adds a user to the workspace.
+      parameters:
+        - $ref: "../schemas/common.yaml#/api_key_header"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/user.yaml#/components/schemas/CreateUserRequest"
+      responses:
+        "201":
+          description: Created - User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/user.yaml#/components/schemas/UserWithApps"
+
+  /users/{email}:
+    delete:
+      summary: Remove a user
+      description: Removes a user from the workspace.
+      parameters:
+        - $ref: "../schemas/common.yaml#/api_key_header"
+        - in: path
+          name: email
+          description: Email address of the user to remove.
+          required: true
+          schema:
+            type: string
+            format: email
+            example: "oliver@example.com"
+      responses:
+        "204":
+          description: No Content - User deactivated successfully

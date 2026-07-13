@@ -13,16 +13,8 @@
   "navbar": {
     "links": [
       {
-        "label": "Blog",
-        "href": "https://www.neeto.com/neetoauth/blog"
-      },
-      {
         "label": "Help Center",
         "href": "https://help.neetoauth.com"
-      },
-      {
-        "label": "NeetoAuth",
-        "href": "https://neetoauth.com/"
       }
     ]
   },
@@ -48,14 +40,19 @@
         ]
       },
       {
-        "group": "Team Members API",
+        "group": "Users",
         "icon": "user-group",
         "pages": [
-          "api-reference/team-members/list",
-          "api-reference/team-members/add",
-          "api-reference/team-members/get",
-          "api-reference/team-members/update",
-          "api-reference/team-members/remove"
+          "api-reference/users/list",
+          "api-reference/users/add",
+          "api-reference/users/remove"
+        ]
+      },
+      {
+        "group": "Products",
+        "icon": "grid-2",
+        "pages": [
+          "api-reference/products/list"
         ]
       }
     ]

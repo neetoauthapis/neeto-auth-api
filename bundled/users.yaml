@@ -1,0 +1,202 @@
+openapi: 3.0.3
+info:
+  title: NeetoAuth APIs
+  version: 1.0.0
+servers:
+  - description: NeetoAuth APIs
+    url: https://{your-subdomain}.neetoauth.com/api/external/v2
+    variables:
+      your-subdomain:
+        default: spinkart
+        description: Replace **spinkart** with your [workspace's subdomain](/getting-started/workspace-subdomain).
+paths:
+  /users:
+    get:
+      summary: List active users
+      description: Lists all active users in the workspace.
+      parameters:
+        - $ref: '#/components/parameters/api_key_header'
+        - $ref: '#/components/parameters/page_number_param'
+        - $ref: '#/components/parameters/page_size_param'
+      responses:
+        '200':
+          description: OK - Request succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+    post:
+      summary: Add a user
+      description: Adds a user to the workspace.
+      parameters:
+        - $ref: '#/components/parameters/api_key_header'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: Created - User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithApps'
+  /users/{email}:
+    delete:
+      summary: Remove a user
+      description: Removes a user from the workspace.
+      parameters:
+        - $ref: '#/components/parameters/api_key_header'
+        - in: path
+          name: email
+          description: Email address of the user to remove.
+          required: true
+          schema:
+            type: string
+            format: email
+            example: oliver@example.com
+      responses:
+        '204':
+          description: No Content - User deactivated successfully
+components:
+  parameters:
+    api_key_header:
+      in: header
+      name: X-Api-Key
+      description: Use the X-Api-Key header to provide your workspace API key. Refer to [Authentication](/getting-started/authentication) for more information.
+      required: true
+      schema:
+        type: string
+    page_number_param:
+      in: query
+      name: page_number
+      description: Retrieve paginated results by specifying the desired page number. Defaulting to 1 when omitted.
+      required: false
+      schema:
+        type: integer
+    page_size_param:
+      in: query
+      name: page_size
+      description: Set the number of results returned in the response. Defaulting to 30 when omitted.
+      required: false
+      schema:
+        type: integer
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        total_records:
+          type: integer
+        total_pages:
+          type: integer
+        current_page_number:
+          type: integer
+        page_size:
+          type: integer
+    PaginatedResponse:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        total_count:
+          type: integer
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: oliver@example.com
+        role:
+          type: string
+          example: non_owner
+        first_name:
+          type: string
+          example: Oliver
+        last_name:
+          type: string
+          example: Smith
+    UserListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          properties:
+            users:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+    CreateUserApp:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Product name returned by the [List available products](/api-reference/products/list) endpoint.
+          example: Cal
+        role:
+          type: string
+          description: Role returned in the product's roles list.
+          example: Admin
+      required:
+        - name
+        - role
+    CreateUserRequest:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+              description: Email of the user.
+              example: oliver@example.com
+            role:
+              type: string
+              description: Role of the user.
+              enum:
+                - owner
+                - non_owner
+              example: non_owner
+            first_name:
+              type: string
+              description: First name of the user. Defaults to "-" when omitted.
+              example: Oliver
+            last_name:
+              type: string
+              description: Last name of the user. Defaults to "-" when omitted.
+              example: Smith
+            apps:
+              type: array
+              description: Product roles to assign to the user.
+              items:
+                $ref: '#/components/schemas/CreateUserApp'
+          required:
+            - email
+            - role
+            - apps
+          description: If the email belongs to a deactivated user, that user is reactivated with the supplied attributes.
+      required:
+        - user
+    UserApp:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Cal
+        role:
+          type: string
+          example: Admin
+    UserWithApps:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            apps:
+              type: array
+              items:
+                $ref: '#/components/schemas/UserApp'
+              example:
+                - name: Cal
+                  role: Admin
