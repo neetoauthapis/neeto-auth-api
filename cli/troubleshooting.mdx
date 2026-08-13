@@ -1,0 +1,65 @@
+---
+title: "Troubleshooting"
+description: "Diagnose authentication and connectivity issues with neetoauth doctor."
+---
+
+## Run the doctor
+
+When something goes wrong, start with `neetoauth doctor`. It checks your authentication, API connection, and CLI version.
+
+```bash
+neetoauth doctor
+```
+
+When multiple workspaces are signed in, name the one to check:
+
+```bash
+neetoauth doctor --subdomain your-workspace
+```
+
+## Common errors
+
+When a command fails, it prints a one-line error message.
+
+<AccordionGroup>
+  <Accordion title="Not authenticated. Run 'neetoauth login' to authenticate.">
+    **Problem**: no workspace is signed in. <br />
+    **Solution**: run [`neetoauth login --subdomain <name>`](/cli/authentication).
+  </Accordion>
+  <Accordion title="Multiple subdomains authenticated (acme, beta); specify --subdomain.">
+    **Problem**: more than one workspace is signed in, so the target is ambiguous. <br />
+    **Solution**: add `--subdomain <name>` to the command.
+  </Accordion>
+  <Accordion title='Not authenticated for "foo". Authenticated subdomains: acme, beta.'>
+    **Problem**: the `--subdomain` value doesn't match any signed-in workspace. <br />
+    **Solution**: use one of the listed subdomains, or [sign in](/cli/authentication) to the new one.
+  </Accordion>
+  <Accordion title="--email is required">
+    **Problem**: `users create` ran without an email address. <br />
+    **Solution**: pass `--email <address>`, or supply it in the file given to `--json-file`.
+  </Accordion>
+  <Accordion title="--role is required (e.g. owner, non_owner)">
+    **Problem**: `users create` ran without an organization role. <br />
+    **Solution**: pass `--role owner` or `--role non_owner`. This is the organization-level role, not a product role.
+  </Accordion>
+  <Accordion title='Invalid --app value "neetocal" (expected name:role).'>
+    **Problem**: an `--app` value is missing the role half. <br />
+    **Solution**: write it as `name:role`, for example `--app neetocal:admin`. Run `neetoauth products list` to see the valid pairs.
+  </Accordion>
+  <Accordion title="An API error message">
+    **Problem**: the server rejected the request (for example, inviting someone who is already an active member, or removing the last owner). <br />
+    **Solution**: the CLI passes through the server's message. Check the JSON envelope (or `--quiet` payload) for `error`, `errors`, or `notice` and any suggestions from the API.
+  </Accordion>
+</AccordionGroup>
+
+## Permission errors
+
+The CLI acts as the person who signed in, so commands are checked against your own permissions. If a command fails with an authorization error, ask a workspace owner to grant you the permission, or use an [API key](/getting-started/authentication) against the REST API instead.
+
+## Check the version
+
+```bash
+neetoauth version
+```
+
+Prints the CLI version, commit hash, and build date - useful when reporting an issue. Run `neetoauth update` to move to the latest release.

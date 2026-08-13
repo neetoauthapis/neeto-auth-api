@@ -1,0 +1,94 @@
+---
+title: "Commands overview"
+description: "Every neetoauth command grouped by resource, with links to the full reference."
+---
+
+## Global flags
+
+These flags work on every command and are left out of the per-command flag tables below. See [Output formats](/cli/output-formats) for details.
+
+| Flag | Description |
+| --- | --- |
+| `--json` | Output as JSON |
+| `--quiet` | Output raw data only (no envelope) |
+| `--toon` | Output in TOON format (token-optimized for AI agents) |
+| `--subdomain` | Override saved subdomain |
+
+### doctor
+
+Check CLI health and connectivity
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth doctor`](/cli-reference/utility) | Check CLI health and connectivity |
+
+### login
+
+Authenticate to NeetoAuth via browser
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth login`](/cli-reference/utility) | Authenticate to NeetoAuth via browser |
+
+### logout
+
+Sign out and clear saved credentials
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth logout`](/cli-reference/utility) | Sign out and clear saved credentials |
+
+### products
+
+Inspect products and their available roles
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth products list`](/cli-reference/products) | List products available in the workspace and the roles each one exposes |
+
+### setup
+
+Set up NeetoAuth for AI coding assistants
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth setup claude`](/cli-reference/utility) | Register NeetoAuth plugin with Claude Code |
+| [`neetoauth setup codex`](/cli-reference/utility) | Add NeetoAuth instructions for OpenAI Codex |
+| [`neetoauth setup copilot`](/cli-reference/utility) | Add NeetoAuth instructions for GitHub Copilot |
+| [`neetoauth setup cursor`](/cli-reference/utility) | Write NeetoAuth rules for Cursor IDE |
+| [`neetoauth setup gemini`](/cli-reference/utility) | Add NeetoAuth instructions for Gemini CLI |
+| [`neetoauth setup windsurf`](/cli-reference/utility) | Write NeetoAuth rules for Windsurf IDE |
+
+### update
+
+Update the CLI to the latest version
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth update`](/cli-reference/utility) | Update the CLI to the latest version |
+
+### users
+
+Manage workspace team members
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth users create`](/cli-reference/users) | Invite a new team member to the workspace |
+| [`neetoauth users delete`](/cli-reference/users) | Remove a team member from the workspace |
+| [`neetoauth users list`](/cli-reference/users) | List active team members in the workspace |
+
+### version
+
+Print the CLI version
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth version`](/cli-reference/utility) | Print the CLI version |
+
+### whoami
+
+Show current authenticated user(s)
+
+| Command | Description |
+| --- | --- |
+| [`neetoauth whoami`](/cli-reference/utility) | Show current authenticated user(s) |

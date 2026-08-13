@@ -1,0 +1,186 @@
+---
+title: "Utility commands"
+description: "Authentication, diagnostics, versioning, AI-assistant setup, and shell completion."
+---
+
+import LogoutFlags from '/snippets/cli/logout.mdx'
+
+These commands manage the CLI itself rather than a NeetoAuth resource.
+
+## Authentication
+
+### login
+
+```bash
+neetoauth login --subdomain your-workspace
+```
+
+Opens your browser to sign in and saves credentials for the workspace. Omit `--subdomain` to be prompted.
+
+```text Sample output
+Authenticated as oliver@example.com on acme.neetoauth.com.
+```
+
+### logout
+
+```bash
+neetoauth logout --subdomain your-workspace
+neetoauth logout --all
+```
+
+<LogoutFlags />
+
+```text Sample output
+Signed out of acme.neetoauth.com.
+```
+
+With `--all`, it prints `Signed out of all subdomains.` instead.
+
+### whoami
+
+```bash
+neetoauth whoami
+```
+
+Lists each signed-in account and marks it `(default)` when only one is signed in. Pass `--subdomain <name>` to show one workspace.
+
+```text Sample output
+Authenticated as oliver@example.com on acme.neetoauth.com (default).
+```
+
+## Diagnostics
+
+### doctor
+
+```bash
+neetoauth doctor
+```
+
+Checks authentication, API reachability, and the CLI version. See [Troubleshooting](/cli/troubleshooting). When several workspaces are signed in, pass `--subdomain <name>`.
+
+```text Sample output
+✓ Authentication: authenticated as oliver@example.com on acme.neetoauth.com
+✓ API connection: https://acme.neetoauth.com (responding in 214ms)
+✓ CLI version: 1.0.7
+```
+
+A failed check is marked `✗` and carries the underlying error on the next line.
+
+### version
+
+```bash
+neetoauth version
+```
+
+Prints the CLI version, commit hash, and build date.
+
+```json Sample output
+{
+  "binary": "neetoauth",
+  "version": "1.0.7",
+  "commit": "a1b2c3d",
+  "date": "2026-08-04"
+}
+```
+
+### commands
+
+```bash
+neetoauth commands
+```
+
+Prints the complete command and flag catalog for the installed version as JSON. It is useful in scripts and with AI assistants.
+
+```json Sample output
+[
+  {
+    "command": "neetoauth users",
+    "description": "Manage workspace team members",
+    "subcommands": [
+      {
+        "command": "neetoauth users list",
+        "description": "List active team members in the workspace",
+        "flags": [
+          { "name": "page", "type": "int", "default": "0", "description": "Page number" }
+        ]
+      }
+    ]
+  }
+]
+```
+
+## Updating
+
+### update
+
+```bash
+neetoauth update
+```
+
+Detects how the CLI was installed and runs the matching upgrade for you.
+
+```text Sample output
+Detected Homebrew install.
+Running: brew update && brew upgrade neetozone/homebrew-tap/neetoauth
+```
+
+Outside Homebrew it reports a `shell-script` install on macOS and Linux, or a `Windows` install on Windows, and runs the matching installer.
+
+## AI-assistant setup
+
+Add NeetoAuth instructions to your AI coding assistant. See [AI assistants](/cli/ai-assistants) for details.
+
+```bash
+neetoauth setup claude
+neetoauth setup cursor
+neetoauth setup windsurf
+neetoauth setup copilot
+neetoauth setup gemini
+neetoauth setup codex
+```
+
+```text Sample output
+NeetoAuth plugin extracted to /Users/oliver/.config/neetoauth/claude-plugin
+
+To finish installation, open Claude Code and run these slash commands:
+  /plugin marketplace add /Users/oliver/.config/neetoauth/claude-plugin
+  /plugin install neetoauth@neetoauth
+
+(Claude Code installs plugins via interactive slash commands — there is no shell equivalent today.)
+```
+
+The other assistants write a rules or instructions file directly, reporting `Wrote <path>` or `Updated <path>`.
+
+## Shell completion
+
+Shell completion fills in command names, subcommands, and flags when you press `Tab`. It saves you from having to remember the full command tree or look up `--help`.
+
+`neetoauth completion <shell>` installs completion for your shell. It writes a script under `~/.config/neetoauth/completions` and configures your shell to load it the next time it starts.
+
+<CodeGroup>
+```bash Zsh
+neetoauth completion zsh
+```
+
+```bash Bash
+neetoauth completion bash
+```
+
+```bash Fish
+neetoauth completion fish
+```
+
+```powershell PowerShell
+neetoauth completion powershell
+```
+</CodeGroup>
+
+Start a new shell (or run `source ~/.zshrc`) to enable it. After upgrading the CLI, run the command again to update the available completions. Re-running it replaces the existing script and configuration without adding duplicates.
+
+<Note>
+  To configure it yourself, pass `--print` to write the raw script to standard output instead of installing it:
+
+  ```bash
+  neetoauth completion zsh --print
+  ```
+</Note>

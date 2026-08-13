@@ -1,0 +1,256 @@
+---
+title: "Connect"
+description: "Point your AI assistant at the NeetoAuth MCP server."
+---
+
+NeetoAuth hosts the MCP server, so there is nothing to install or run locally. Add it to your assistant, sign in or supply an API key, then restart the assistant to make the NeetoAuth tools available.
+
+## Server details
+
+| | |
+| --- | --- |
+| **Endpoint** | `https://connect.neetoauth.com/mcp/messages` |
+| **Transport** | HTTP |
+| **OAuth** | Discovered from `https://connect.neetoauth.com/.well-known/oauth-authorization-server` |
+| **API key** | `Authorization: Bearer <your-api-key>` header |
+
+## Which method does your client use?
+
+Read [Authentication](/mcp/authentication) first: OAuth scopes the assistant to you, an API key scopes it to the whole workspace.
+
+| Client | OAuth | API key |
+| --- | --- | --- |
+| Claude | Yes | - |
+| ChatGPT | Yes | - |
+| Claude Code | Yes | Yes |
+| Codex | Yes | Yes |
+| Cursor | Yes | Yes |
+| Gemini CLI | Yes | Yes |
+| VS Code | Yes | Yes |
+| Windsurf | Yes | Yes |
+
+Clients that read a config file appear in both columns. Which method they use is decided by what you put in the file: include an `Authorization` header and it connects with the API key, leave it out and it starts the OAuth flow.
+
+## Connect with OAuth
+
+<Tabs>
+  <Tab title="Claude">
+    Open **Settings → Connectors → Add → Add custom connector**, give it a name such as `NeetoAuth`, and paste:
+
+    ```
+    https://connect.neetoauth.com/mcp/messages
+    ```
+
+    Approve the connection when your browser opens. This works on claude.ai, the Claude desktop app, and Cowork.
+  </Tab>
+  <Tab title="ChatGPT">
+    Turn on **Settings → Security and login → Developer mode**, then open **Plugins → Browse plugins → + → New Plugin** and paste:
+
+    ```
+    https://connect.neetoauth.com/mcp/messages
+    ```
+
+    Approve the connection when your browser opens.
+  </Tab>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http neetoauth https://connect.neetoauth.com/mcp/messages
+    ```
+
+    Then run `/mcp` inside Claude Code and choose to sign in. Omitting `--header` is what selects OAuth.
+  </Tab>
+  <Tab title="Codex">
+    Add the server to `~/.codex/config.toml`:
+
+    ```toml
+    [mcp_servers.neetoauth]
+    url = "https://connect.neetoauth.com/mcp/messages"
+    ```
+
+    Then sign in:
+
+    ```bash
+    codex mcp login neetoauth
+    ```
+
+    Codex uses TOML, not JSON.
+  </Tab>
+  <Tab title="Cursor">
+    Create or edit `~/.cursor/mcp.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "neetoauth": {
+          "url": "https://connect.neetoauth.com/mcp/messages"
+        }
+      }
+    }
+    ```
+
+    Restart Cursor, then approve the sign-in prompt.
+  </Tab>
+  <Tab title="Gemini CLI">
+    Edit `~/.gemini/settings.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "neetoauth": {
+          "httpUrl": "https://connect.neetoauth.com/mcp/messages"
+        }
+      }
+    }
+    ```
+
+    Gemini CLI uses `httpUrl` for streamable HTTP; `url` means SSE. The sign-in flow starts the first time the server answers with a 401.
+  </Tab>
+  <Tab title="VS Code">
+    Create `.vscode/mcp.json` in your workspace:
+
+    ```json
+    {
+      "servers": {
+        "neetoauth": {
+          "type": "http",
+          "url": "https://connect.neetoauth.com/mcp/messages"
+        }
+      }
+    }
+    ```
+
+    Requires VS Code 1.99 or later and GitHub Copilot Chat's **Agent** mode. VS Code uses `servers`, not `mcpServers`.
+  </Tab>
+  <Tab title="Windsurf">
+    Edit `~/.codeium/windsurf/mcp_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "neetoauth": {
+          "serverUrl": "https://connect.neetoauth.com/mcp/messages"
+        }
+      }
+    }
+    ```
+
+    Windsurf uses `serverUrl`, not `url`. Enable the server in **Settings → Cascade → MCP Servers**.
+  </Tab>
+</Tabs>
+
+## Connect with an API key
+
+Replace `YOUR_API_KEY` with your [NeetoAuth API key](/getting-started/authentication). Remember that a key is scoped to the whole workspace, not to you.
+
+<Tabs>
+  <Tab title="Claude Code">
+    Add the server to `~/.claude.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "neetoauth": {
+          "type": "http",
+          "url": "https://connect.neetoauth.com/mcp/messages",
+          "headers": {
+            "Authorization": "Bearer YOUR_API_KEY"
+          }
+        }
+      }
+    }
+    ```
+
+    Save the file, then restart Claude Code.
+  </Tab>
+  <Tab title="Codex">
+    Add the server to `~/.codex/config.toml`:
+
+    ```toml
+    [mcp_servers.neetoauth]
+    url = "https://connect.neetoauth.com/mcp/messages"
+    bearer_token_env_var = "NEETOAUTH_API_KEY"
+    ```
+
+    `bearer_token_env_var` takes the *name* of an environment variable, not the key itself. Export `NEETOAUTH_API_KEY` before starting Codex.
+  </Tab>
+  <Tab title="Cursor">
+    Create or edit `~/.cursor/mcp.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "neetoauth": {
+          "url": "https://connect.neetoauth.com/mcp/messages",
+          "headers": {
+            "Authorization": "Bearer YOUR_API_KEY"
+          }
+        }
+      }
+    }
+    ```
+
+    Save the file, then restart Cursor or reload its window.
+  </Tab>
+  <Tab title="Gemini CLI">
+    Edit `~/.gemini/settings.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "neetoauth": {
+          "httpUrl": "https://connect.neetoauth.com/mcp/messages",
+          "headers": {
+            "Authorization": "Bearer YOUR_API_KEY"
+          }
+        }
+      }
+    }
+    ```
+
+    Gemini CLI uses `httpUrl`, not `url`.
+  </Tab>
+  <Tab title="VS Code">
+    Create `.vscode/mcp.json` in your workspace:
+
+    ```json
+    {
+      "servers": {
+        "neetoauth": {
+          "type": "http",
+          "url": "https://connect.neetoauth.com/mcp/messages",
+          "headers": {
+            "Authorization": "Bearer YOUR_API_KEY"
+          }
+        }
+      }
+    }
+    ```
+
+    <Warning>
+      This file lives in your repository. Do not commit it with a key in it -
+      add it to `.gitignore`, or use OAuth instead.
+    </Warning>
+  </Tab>
+  <Tab title="Windsurf">
+    Edit `~/.codeium/windsurf/mcp_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "neetoauth": {
+          "serverUrl": "https://connect.neetoauth.com/mcp/messages",
+          "headers": {
+            "Authorization": "Bearer YOUR_API_KEY"
+          }
+        }
+      }
+    }
+    ```
+
+    Windsurf uses `serverUrl`, not `url`, and allows up to 100 MCP tools across all connected servers.
+  </Tab>
+</Tabs>
+
+## Verify the connection
+
+After your assistant reloads, confirm that the NeetoAuth tools are listed. Then try a prompt such as *"Which neeto products are enabled in my NeetoAuth workspace?"* Find more in [Examples](/mcp/examples).

@@ -1,0 +1,59 @@
+---
+title: "Examples"
+description: "Prompts that show what the NeetoAuth MCP server can do."
+---
+
+Once [connected](/mcp/connect), describe what you want in plain language. The assistant picks the right [tool](/mcp/tools) and fills in the arguments.
+
+## Review who has access
+
+> Who is in my NeetoAuth workspace, and which of them are owners?
+
+The assistant calls `ListUsers` and groups the results by organization role. Only active members are returned; deactivated ones are left out.
+
+> Does anyone with an @example.com address still have an account?
+
+`ListUsers` accepts an email filter that matches any part of the address, case-insensitively, so a domain works as well as a full address.
+
+## Discover products and roles
+
+> What neeto products are enabled here, and what roles does each one offer?
+
+`ListProducts` returns each product with its role names. Ask this before inviting anyone - it is how the assistant learns which product and role values your workspace accepts.
+
+## Onboard someone
+
+> Invite sam@example.com as a non-owner, first name Sam, last name Smith, and give them the admin role in NeetoCal.
+
+The assistant calls `CreateUser` with the organization role and the product grant together, and NeetoAuth emails Sam an invitation. The response echoes the product grants that were resolved, so you can confirm the role landed.
+
+<Tip>
+  Ask the assistant to list products first if you are unsure of the role names.
+  An invitation naming a role that does not exist in the workspace is rejected.
+</Tip>
+
+## Offboard someone
+
+> Sam has left. Remove their NeetoAuth access.
+
+`DeactivateUser` deactivates the account and ends that person's sessions across every neeto product.
+
+<Warning>
+  Deactivation is reversible only through the NeetoAuth admin UI, so confirm the
+  address before you approve the call. It fails if the person is already
+  deactivated, or if removing them would leave the workspace without an owner.
+</Warning>
+
+## Chain the two together
+
+> Move Sam from NeetoCal admin to NeetoDesk agent.
+
+There is no update tool, so the assistant does this as a deactivate followed by a fresh invitation. Ask it to confirm the plan before it runs, since the invitation email goes out again.
+
+## What it cannot do
+
+- Change an existing member's role or product grants in place.
+- Reactivate someone who has been deactivated.
+- Read deactivated members.
+
+For those, use the NeetoAuth admin UI.

@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "NeetoAuth API",
-  "description": "",
+  "name": "NeetoAuth Docs",
+  "description": "API reference, CLI, and MCP server for NeetoAuth.",
   "theme": "mint",
   "colors": {
     "primary": "#10B981",
@@ -27,32 +27,90 @@
     }
   },
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "icon": "rocket",
-        "pages": [
-          "getting-started/introduction",
-          "getting-started/workspace-subdomain",
-          "getting-started/authentication",
-          "getting-started/pagination",
-          "getting-started/response-codes"
+        "tab": "API Reference",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "pages": [
+              "getting-started/introduction",
+              "getting-started/workspace-subdomain",
+              "getting-started/authentication",
+              "getting-started/pagination",
+              "getting-started/response-codes"
+            ]
+          },
+          {
+            "group": "Users",
+            "icon": "user-group",
+            "pages": [
+              "api-reference/users/list",
+              "api-reference/users/add",
+              "api-reference/users/remove"
+            ]
+          },
+          {
+            "group": "Products",
+            "icon": "grid-2",
+            "pages": [
+              "api-reference/products/list"
+            ]
+          }
         ]
       },
       {
-        "group": "Users",
-        "icon": "user-group",
-        "pages": [
-          "api-reference/users/list",
-          "api-reference/users/add",
-          "api-reference/users/remove"
+        "tab": "CLI",
+        "icon": "rectangle-terminal",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "pages": [
+              "cli/introduction",
+              "cli/installation",
+              "cli/authentication",
+              "cli/output-formats",
+              "cli/ai-assistants",
+              "cli/troubleshooting"
+            ]
+          },
+          {
+            "group": "Commands",
+            "icon": "terminal",
+            "pages": [
+              "cli-reference/overview",
+              "cli-reference/users",
+              "cli-reference/products",
+              "cli-reference/utility"
+            ]
+          }
         ]
       },
       {
-        "group": "Products",
-        "icon": "grid-2",
-        "pages": [
-          "api-reference/products/list"
+        "tab": "MCP",
+        "icon": "plug",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "pages": [
+              "mcp/introduction",
+              "mcp/authentication",
+              "mcp/connect",
+              "mcp/examples",
+              "mcp/troubleshooting"
+            ]
+          },
+          {
+            "group": "Reference",
+            "icon": "wrench",
+            "pages": [
+              "mcp/tools"
+            ]
+          }
         ]
       }
     ]
@@ -66,7 +124,11 @@
       "proxy": true
     },
     "examples": {
-      "languages": ["curl", "javascript", "python"],
+      "languages": [
+        "curl",
+        "javascript",
+        "python"
+      ],
       "defaults": "all"
     }
   },

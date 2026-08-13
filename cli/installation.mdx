@@ -1,0 +1,69 @@
+---
+title: "Installation"
+description: "Install the neetoauth CLI on macOS, Linux, or Windows."
+---
+
+Install the `neetoauth` binary with the command for your platform, then [verify it](#verify-the-installation).
+
+<CodeGroup>
+```bash macOS
+brew trust neetozone/tap
+brew install neetozone/tap/neetoauth
+```
+
+```bash Linux
+curl -fsSL https://neetoauth.com/cli/install.sh | sh
+```
+
+```powershell Windows
+irm https://neetoauth.com/cli/install.ps1 | iex
+```
+</CodeGroup>
+
+The shell and Windows installers download the latest release for your architecture (`amd64` or `arm64`), extract it, and add `neetoauth` to your `PATH`.
+
+## Other install methods
+
+<AccordionGroup>
+  <Accordion title="macOS - shell script">
+    ```bash
+    curl -fsSL https://neetoauth.com/cli/install.sh | sh
+    ```
+
+    Installs to `/usr/local/bin` and may prompt for `sudo`. To update a Homebrew installation, run `brew upgrade neetoauth`.
+  </Accordion>
+  <Accordion title="Windows - Command Prompt (CMD)">
+    ```cmd
+    curl -fsSL https://neetoauth.com/cli/install.cmd -o install.cmd && install.cmd
+    ```
+
+    Extracts to `%LOCALAPPDATA%\Programs\neetoauth` and adds it to your user `PATH`. This is equivalent to the PowerShell method.
+  </Accordion>
+</AccordionGroup>
+
+## Upgrade
+
+```bash
+neetoauth update
+```
+
+Downloads and installs the latest release in place. If you installed through Homebrew, run `brew upgrade neetoauth` instead.
+
+## Verify the installation
+
+Restart your terminal, then run:
+
+```bash
+neetoauth --help
+```
+
+You should see the list of available commands. To check the installed version:
+
+```bash
+neetoauth version
+```
+
+<Tip>
+  Next, [sign in](/cli/authentication) to a workspace and run `neetoauth doctor`
+  to confirm the CLI can reach NeetoAuth.
+</Tip>

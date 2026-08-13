@@ -1,0 +1,47 @@
+---
+title: "Products"
+description: "List the neeto products enabled in your workspace and the roles each one exposes."
+---
+
+A product is a neeto application enabled for your workspace, such as NeetoCal or NeetoDesk. Each one exposes its own set of roles. For fields and response details, see the [API reference](/api-reference/products/list).
+
+Samples on this page use `--json`, because pretty table output depends on your terminal width.
+
+## List products
+
+This command shows which neeto products your workspace has, along with the role names available in each. Use it before [inviting a user](/cli-reference/users#invite-a-user), so the `--app name:role` pairs you pass are ones the workspace actually accepts.
+
+```bash
+neetoauth products list
+```
+
+```json Sample output (--json)
+{
+  "data": [
+    {
+      "name": "neetocal",
+      "roles": ["admin", "standard"]
+    },
+    {
+      "name": "neetodesk",
+      "roles": ["admin", "agent", "viewer"]
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "label": "Use a role when inviting",
+      "command": "neetoauth users create --email <email> --role non_owner --app <product>:<role>"
+    }
+  ],
+  "pagination": {
+    "total_records": 2,
+    "total_pages": 1,
+    "current_page_number": 1,
+    "page_size": 30
+  }
+}
+```
+
+Combine a `name` with one of its `roles` to build an `--app` value, for example `--app neetodesk:agent`.
+
+This command takes no flags of its own beyond the [global flags](/cli-reference/overview#global-flags).

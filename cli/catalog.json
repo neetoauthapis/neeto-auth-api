@@ -1,0 +1,139 @@
+[
+  {
+    "command": "neetoauth doctor",
+    "description": "Check CLI health and connectivity"
+  },
+  {
+    "command": "neetoauth login",
+    "description": "Authenticate to NeetoAuth via browser"
+  },
+  {
+    "command": "neetoauth logout",
+    "description": "Sign out and clear saved credentials",
+    "flags": [
+      {
+        "name": "all",
+        "type": "bool",
+        "default": "false",
+        "description": "Sign out of every saved subdomain"
+      }
+    ]
+  },
+  {
+    "command": "neetoauth products",
+    "description": "Inspect products and their available roles",
+    "subcommands": [
+      {
+        "command": "neetoauth products list",
+        "description": "List products available in the workspace and the roles each one exposes"
+      }
+    ]
+  },
+  {
+    "command": "neetoauth setup",
+    "description": "Set up NeetoAuth for AI coding assistants",
+    "subcommands": [
+      {
+        "command": "neetoauth setup claude",
+        "description": "Register NeetoAuth plugin with Claude Code"
+      },
+      {
+        "command": "neetoauth setup codex",
+        "description": "Add NeetoAuth instructions for OpenAI Codex"
+      },
+      {
+        "command": "neetoauth setup copilot",
+        "description": "Add NeetoAuth instructions for GitHub Copilot"
+      },
+      {
+        "command": "neetoauth setup cursor",
+        "description": "Write NeetoAuth rules for Cursor IDE"
+      },
+      {
+        "command": "neetoauth setup gemini",
+        "description": "Add NeetoAuth instructions for Gemini CLI"
+      },
+      {
+        "command": "neetoauth setup windsurf",
+        "description": "Write NeetoAuth rules for Windsurf IDE"
+      }
+    ]
+  },
+  {
+    "command": "neetoauth update",
+    "description": "Update the CLI to the latest version"
+  },
+  {
+    "command": "neetoauth users",
+    "description": "Manage workspace team members",
+    "subcommands": [
+      {
+        "command": "neetoauth users create",
+        "description": "Invite a new team member to the workspace",
+        "flags": [
+          {
+            "name": "app",
+            "type": "stringSlice",
+            "default": "[]",
+            "description": "Per-app role assignment as name:role (repeatable)"
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "description": "Member email address (required)"
+          },
+          {
+            "name": "first-name",
+            "type": "string",
+            "description": "Member first name"
+          },
+          {
+            "name": "json-file",
+            "type": "string",
+            "description": "Path to a JSON file with the full user payload"
+          },
+          {
+            "name": "last-name",
+            "type": "string",
+            "description": "Member last name"
+          },
+          {
+            "name": "role",
+            "type": "string",
+            "description": "Organization role, e.g. owner or non_owner (required)"
+          }
+        ]
+      },
+      {
+        "command": "neetoauth users delete",
+        "description": "Remove a team member from the workspace"
+      },
+      {
+        "command": "neetoauth users list",
+        "description": "List active team members in the workspace",
+        "flags": [
+          {
+            "name": "page",
+            "type": "int",
+            "default": "0",
+            "description": "Page number"
+          },
+          {
+            "name": "page-size",
+            "type": "int",
+            "default": "0",
+            "description": "Items per page (max 100)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "command": "neetoauth version",
+    "description": "Print the CLI version"
+  },
+  {
+    "command": "neetoauth whoami",
+    "description": "Show current authenticated user(s)"
+  }
+]

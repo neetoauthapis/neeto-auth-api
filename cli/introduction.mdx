@@ -1,0 +1,37 @@
+---
+title: "NeetoAuth CLI"
+description: "Manage workspace members and inspect product roles from your terminal."
+---
+
+The **NeetoAuth CLI** (`neetoauth`) lets you manage NeetoAuth from your terminal. It covers the [v2 REST API](/getting-started/introduction): list who is in your workspace, invite new members with the right product roles, remove people who have left, and see which neeto products are enabled and what roles each one exposes.
+
+It is designed for people comfortable with a terminal or HTTP. You do not need to be a developer: run `neetoauth setup` to connect an AI assistant such as Claude or Cursor, then describe the task in plain language.
+
+## Why use the CLI?
+
+<CardGroup cols={2}>
+  <Card title="Script onboarding" icon="terminal">
+    Invite new joiners and assign their product roles from shell scripts, so access is granted the same way every time.
+  </Card>
+  <Card title="Audit access from the terminal" icon="magnifying-glass">
+    Pull the active member list, pipe it to `jq`, and reconcile it against your HR system without opening the admin UI.
+  </Card>
+  <Card title="Manage many workspaces" icon="layer-group">
+    Sign in to several workspaces at once and target any of them with a single flag - no browser switching.
+  </Card>
+  <Card title="Built for AI agents" icon="robot">
+    Use token-efficient `--toon` output and one-command setup for Claude, Cursor, Copilot, and more.
+  </Card>
+</CardGroup>
+
+## What you need
+
+1. Access to one or more NeetoAuth workspaces.
+2. Permission to manage members in those workspaces.
+3. The `neetoauth` binary. See [Installation](/cli/installation).
+
+<Note>
+  Unlike the API, which authenticates with an `X-Api-Key` header, the CLI signs
+  you in through your browser and stores credentials locally. See
+  [Authentication](/cli/authentication).
+</Note>

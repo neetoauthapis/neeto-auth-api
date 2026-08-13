@@ -1,0 +1,51 @@
+---
+title: "NeetoAuth MCP"
+description: "Let an AI assistant manage workspace members and product roles through the Model Context Protocol."
+---
+
+The **NeetoAuth MCP server** exposes your workspace to AI assistants through the [Model Context Protocol](https://modelcontextprotocol.io). Once connected, an assistant can read your member list, see which neeto products are enabled and what roles they offer, invite new members, and deactivate ones who have left - all in plain language.
+
+NeetoAuth hosts the server, so there is nothing to install or run locally.
+
+## What it can do
+
+<CardGroup cols={2}>
+  <Card title="Answer questions about access" icon="magnifying-glass">
+    Ask who is in the workspace, who holds the owner role, or whether a given address already has an account.
+  </Card>
+  <Card title="Onboard new members" icon="user-plus">
+    Invite someone and grant them roles in specific neeto products in a single request.
+  </Card>
+  <Card title="Offboard people who leave" icon="user-minus">
+    Deactivate a member and end their sessions across every neeto product at once.
+  </Card>
+  <Card title="Discover products and roles" icon="grid-2">
+    List the enabled products with the role names each one exposes, so grants use values the workspace accepts.
+  </Card>
+</CardGroup>
+
+See [Tools](/mcp/tools) for the full list.
+
+## Choose how it signs in
+
+The server accepts two credentials, and the difference is a permissions boundary rather than a setup preference:
+
+| | OAuth | API key |
+| --- | --- | --- |
+| Scope | The person who approved it | The whole workspace |
+| Identity | A NeetoAuth user | None |
+| Set up by | Pasting the server URL | Pasting a key into a config file |
+
+Read [Authentication](/mcp/authentication) before you connect - it decides what the assistant is allowed to do, and inviting or deactivating members is not a reversible mistake.
+
+## What you need
+
+1. A NeetoAuth workspace.
+2. An AI assistant that supports remote MCP servers. See [Connect](/mcp/connect).
+3. For workspace-scoped access only, a NeetoAuth API key. Every supported client can use OAuth instead, so the key is optional.
+
+<Note>
+  The MCP server and the [CLI](/cli/introduction) cover the same resources. Use
+  the CLI when you want scripts and exact commands; use MCP when you want an
+  assistant to work in plain language.
+</Note>

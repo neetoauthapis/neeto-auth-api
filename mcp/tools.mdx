@@ -1,0 +1,61 @@
+---
+title: "Tools"
+description: "Every tool the NeetoAuth MCP server exposes, and what each one reaches."
+---
+
+The server exposes four tools across two resources. Each one maps to a NeetoAuth v2 API endpoint - follow the links for the full field and error details.
+
+With OAuth, every tool runs as the person who approved the connection and is checked against their permissions. With an API key, those checks are skipped and the tools reach the whole workspace. See [Authentication](/mcp/authentication).
+
+## Users
+
+| Tool | Reads or writes | What it does |
+| --- | --- | --- |
+| `ListUsers` | Reads | Lists active members with their email, organization role, and name. Optionally filters by an email substring, matched case-insensitively. [API reference](/api-reference/users/list) |
+| `CreateUser` | Writes | Invites a new member and emails them an invitation, optionally granting roles in specific neeto products at the same time. [API reference](/api-reference/users/add) |
+| `DeactivateUser` | Writes | Deactivates an active member by exact email address and destroys their sessions across every neeto product. [API reference](/api-reference/users/remove) |
+
+### ListUsers
+
+| Argument | Required | Description |
+| --- | --- | --- |
+| `email` | | Filter by email substring (case-insensitive, partial match) |
+| `page` | | Page number (default: 1) |
+| `page_size` | | Users per page (default: 15, max: 100) |
+
+Returns `users`, each with `email`, `role`, `first_name` and `last_name`, alongside `total_count`, `page`, `total_pages` and `page_size`. Deactivated members are never returned.
+
+### CreateUser
+
+| Argument | Required | Description |
+| --- | --- | --- |
+| `email` | Yes | Email of the user to invite |
+| `role` | Yes | Organization role: `owner` or `non_owner` (case-insensitive) |
+| `first_name` | | Defaults to `-` if omitted |
+| `last_name` | | Defaults to `-` if omitted |
+| `apps` | | Product grants, each a `name` and a `role` available in that product |
+
+Returns the invited user together with the `apps` grants the server resolved. Run `ListProducts` first so the `name` and `role` values match what the workspace offers.
+
+### DeactivateUser
+
+| Argument | Required | Description |
+| --- | --- | --- |
+| `email` | Yes | Exact email address of the active user to deactivate |
+
+Returns `deactivated` and the `email`. It fails if the user does not exist, is already deactivated, or if deactivating would leave the workspace without an owner. The action is recorded in the workspace audit log, and is reversible only through the NeetoAuth admin UI.
+
+## Products
+
+| Tool | Reads or writes | What it does |
+| --- | --- | --- |
+| `ListProducts` | Reads | Lists the neeto products enabled for the workspace, each with the role names available in it. [API reference](/api-reference/products/list) |
+
+### ListProducts
+
+| Argument | Required | Description |
+| --- | --- | --- |
+| `page` | | Page number (default: 1) |
+| `page_size` | | Products per page (default: 15, max: 100) |
+
+Returns `products`, each with a `name` and its `roles`, alongside `total_count`, `page`, `total_pages` and `page_size`. Use the pairs to build the `apps` argument for `CreateUser`.

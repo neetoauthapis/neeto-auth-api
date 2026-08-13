@@ -1,0 +1,64 @@
+---
+title: "Troubleshooting"
+description: "Fix connection, permission, and setup problems with the NeetoAuth MCP server."
+---
+
+Start with how you connected - the checks differ, and the config-file steps do not apply to Claude or ChatGPT.
+
+## The server does not appear at all
+
+<AccordionGroup>
+  <Accordion title="Claude or ChatGPT">
+    - Re-open the connector or plugin settings and confirm the entry was saved with the endpoint `https://connect.neetoauth.com/mcp/messages`.
+    - Adding a connector does not enable it in an existing conversation. Start a new one.
+  </Accordion>
+  <Accordion title="Clients that read a config file">
+    - Confirm you edited the file your client actually reads: `~/.claude.json`, `~/.codex/config.toml`, `~/.cursor/mcp.json`, `~/.gemini/settings.json`, `.vscode/mcp.json`, or `~/.codeium/windsurf/mcp_config.json`.
+    - Check the top-level key. VS Code uses `servers`; every other client uses `mcpServers`, and Codex uses a `[mcp_servers.<name>]` table.
+    - Check the URL field. Windsurf uses `serverUrl` and the Gemini CLI uses `httpUrl`; the rest use `url`.
+    - Codex reads TOML, not JSON. A JSON block in `config.toml` will not parse.
+    - Validate the file. A trailing comma or an unclosed brace makes the client skip every server in it, not just this one.
+    - Restart the assistant. Most clients read the config only at startup.
+  </Accordion>
+</AccordionGroup>
+
+## It connects but every call is rejected
+
+<AccordionGroup>
+  <Accordion title="Connected with OAuth">
+    - The token is scoped to you, so a call fails when your own NeetoAuth permissions do not cover it. Ask a workspace owner to grant the permission, or connect with an API key.
+    - The token is scoped to one workspace. If you approved it for a different workspace than the one you are asking about, remove the server and add it again.
+    - Sign in again to refresh an expired token: run `/mcp` in Claude Code, `codex mcp login neetoauth` in Codex, or reconnect from your client's UI.
+  </Accordion>
+  <Accordion title="Connected with an API key">
+    - Confirm the header is exactly `Authorization: Bearer YOUR_API_KEY`, with the key in place of the placeholder.
+    - Confirm the key belongs to the workspace you are asking about, and that it has not been deleted or rotated.
+    - In Codex, `bearer_token_env_var` names an environment variable rather than holding the key. Make sure that variable is exported in the environment Codex starts from.
+  </Accordion>
+</AccordionGroup>
+
+## An invitation is rejected
+
+- `role` must be `owner` or `non_owner`. Product-specific roles go in `apps`, not in `role`.
+- Each entry in `apps` must name a product enabled for the workspace and a role that product exposes. Run `ListProducts` to see the valid pairs.
+- The workspace rejects a second invitation for someone who is already an active member. List the members first to check.
+
+## A deactivation is rejected
+
+- The email must match an active member exactly; a partial address will not resolve.
+- Someone already deactivated cannot be deactivated again.
+- The last owner cannot be removed. Promote another member to owner first.
+
+## Check the server yourself
+
+Confirm the server is reachable and advertising OAuth:
+
+```bash
+curl -s https://connect.neetoauth.com/.well-known/oauth-authorization-server
+```
+
+A JSON document naming the authorization, token, and registration endpoints means the server is up and the problem is on the client side.
+
+## Still stuck
+
+Compare your setup against [Connect](/mcp/connect), and check [Authentication](/mcp/authentication) to confirm the credential you chose can reach what you are asking for.

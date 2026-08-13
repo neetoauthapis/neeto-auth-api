@@ -11,8 +11,10 @@
     "nodemon": "^3.1.10"
   },
   "scripts": {
-    "build": "scripts/bundle.sh",
+    "build": "scripts/bundle.sh && yarn cli:build",
     "build:dev": "nodemon --exec 'scripts/bundle.sh'",
+    "cli:catalog": "neetoauth commands > cli/catalog.json",
+    "cli:build": "node scripts/generate-cli-reference.mjs",
     "docs:preview": "mint dev",
     "check:openapi": "mint openapi-check",
     "check:links": "mint broken-links",

@@ -1,0 +1,50 @@
+---
+title: "AI assistants"
+description: "Set up NeetoAuth for Claude, Cursor, Copilot, and other AI coding assistants."
+---
+
+Use the CLI with an AI coding assistant to manage NeetoAuth in plain language. The `neetoauth setup` commands add NeetoAuth instructions for your assistant, while [`--toon`](/cli/output-formats) keeps command output compact for it to read.
+
+## Set up your assistant
+
+Run the subcommand for the tool you use:
+
+| Command | What it does |
+| --- | --- |
+| `neetoauth setup claude` | Registers the NeetoAuth plugin with Claude Code (plugin manifest, hooks, and skill). |
+| `neetoauth setup cursor` | Writes NeetoAuth rules for the Cursor IDE. |
+| `neetoauth setup windsurf` | Writes NeetoAuth rules for the Windsurf IDE. |
+| `neetoauth setup copilot` | Adds NeetoAuth instructions for GitHub Copilot. |
+| `neetoauth setup gemini` | Adds NeetoAuth instructions for the Gemini CLI. |
+| `neetoauth setup codex` | Adds NeetoAuth instructions for OpenAI Codex. |
+
+```bash
+neetoauth setup claude
+```
+
+After setup, your assistant can check the commands and flags available in your installed CLI version:
+
+```bash
+neetoauth commands
+```
+
+The command prints the complete catalog as JSON.
+
+## Tips for agent workflows
+
+<Tip>
+  Prefer `--toon` when the assistant needs to read a list, and `--quiet` when it
+  needs to pipe a value into the next command. See [Output
+  formats](/cli/output-formats).
+</Tip>
+
+- Authenticate once with [`neetoauth login`](/cli/authentication); the assistant reuses the stored credentials.
+- When several workspaces are signed in, the assistant must pass `--subdomain <name>` on each command.
+- Run [`neetoauth doctor`](/cli/troubleshooting) first to confirm the assistant is authenticated and connected.
+- Have the assistant run `neetoauth products list` before inviting anyone, so it uses product and role names that exist in the workspace.
+
+<Note>
+  The CLI acts as the person who signed in, so an assistant can only do what
+  you can do. To give an assistant workspace-wide access instead, connect the
+  [MCP server](/mcp/introduction) with an API key.
+</Note>
