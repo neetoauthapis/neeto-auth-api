@@ -38,14 +38,38 @@ The server accepts two credentials, and the difference is a permissions boundary
 
 Read [Authentication](/mcp/authentication) before you connect - it decides what the assistant is allowed to do, and inviting or deactivating members is not a reversible mistake.
 
+## MCP vs CLI: which should I use?
+
+NeetoAuth's [CLI](/cli/introduction) reaches the same two resources MCP does - workspace members and products - through the same four operations: list members, invite one, remove one, and list the enabled products with their roles. Neither one can grant or revoke access the other cannot, so choose on how the work reaches NeetoAuth. The one gap is small: `ListUsers` filters by an email substring and the CLI has no flag for that, but the CLI's `--quiet` output piped through `jq` narrows the same list.
+
+### Reach for MCP when
+
+- **The details live in your chat, not in your head.** An offer letter, a Slack thread, or a pasted IT ticket becomes the invitation - address, name, and the products the person needs - with no retyping. The CLI cannot see any of it.
+- **You have not decided the steps yet.** "These contractors finished last week - make sure they are out" means reading the member list, matching it against what you have, and choosing who goes. A command can only carry out a decision you have already made.
+- **One request should cover several steps.** Find out which products the workspace has and what roles each one exposes, invite the person with those grants, then read back the grants the server resolved - no glue between commands.
+- **The person doing it does not use a terminal.** Onboarding is usually run by whoever handles new joiners rather than by an engineer. NeetoAuth hosts the server, so there is nothing to install or keep updated.
+
+### Reach for the CLI instead when
+
+- **No AI assistant should be in the loop.** An offboarding script or a CI step runs the CLI against a workspace it is already signed in to - no assistant open, no model account, no tokens spent per run. Every call here needs something with model access running.
+- **The output feeds another program.** The CLI's `--quiet` prints a bare address list for `jq`, a spreadsheet, or your own script, and `--json` adds the `pagination` block. Here you get prose you would have to copy out by hand.
+- **You are working through the whole member list.** Here every page is a separate tool call, and a roster of a few thousand people crowds out the assistant's context. The CLI returns `total_pages` and `total_records` next to the records, so a shell loop walks every page unattended and writes each one to a file or into `jq` - the size of the workspace stops mattering.
+- **The grant has to be repeatable and reviewable.** A command is the artifact: it records exactly which product role was handed out and repeats identically. Ask twice here and the assistant may resolve a different role.
+
+<Tip>
+  You can have both. Run [`neetoauth setup claude`](/cli/ai-assistants) and the
+  same assistant drives the CLI for you, so a plain-language request still
+  ends in an exact command you can read, repeat, and paste into a script.
+</Tip>
+
+<Warning>
+  Ask your assistant to show you the invitation or the deactivation before it
+  runs. Deactivating someone ends their sessions across every neeto product and
+  is reversible only through the NeetoAuth admin UI.
+</Warning>
+
 ## What you need
 
 1. A NeetoAuth workspace.
 2. An AI assistant that supports remote MCP servers. See [Connect](/mcp/connect).
 3. For workspace-scoped access only, a NeetoAuth API key. Every supported client can use OAuth instead, so the key is optional.
-
-<Note>
-  The MCP server and the [CLI](/cli/introduction) cover the same resources. Use
-  the CLI when you want scripts and exact commands; use MCP when you want an
-  assistant to work in plain language.
-</Note>
