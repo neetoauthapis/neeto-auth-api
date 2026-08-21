@@ -11,6 +11,8 @@ Start with how you connected - the checks differ, and the config-file steps do n
   <Accordion title="Claude or ChatGPT">
     - Re-open the connector or plugin settings and confirm the entry was saved with the endpoint `https://connect.neetoauth.com/mcp/messages`.
     - Adding a connector does not enable it in an existing conversation. Start a new one.
+    - In Claude, adding the connector and authorizing it are two steps. If it never asked you to sign in, open **[Settings → Connectors](https://claude.ai/customize/connectors)** and click **Connect** on the NeetoAuth entry.
+    - On a Team plan, adding a custom connector may be restricted to admins. Ask one to enable it under **[Organization settings → Connectors](https://claude.ai/admin-settings/connectors)**.
   </Accordion>
   <Accordion title="Clients that read a config file">
     - Confirm you edited the file your client actually reads: `~/.claude.json`, `~/.codex/config.toml`, `~/.cursor/mcp.json`, `~/.gemini/settings.json`, `.vscode/mcp.json`, or `~/.codeium/windsurf/mcp_config.json`.
@@ -22,12 +24,22 @@ Start with how you connected - the checks differ, and the config-file steps do n
   </Accordion>
 </AccordionGroup>
 
+## The wrong credential is being used
+
+<AccordionGroup>
+  <Accordion title="The client sends a key when you meant to sign in">
+    The server never offers the sign in while the client is already sending a credential. Remove the `headers` block from the entry - or `bearer_token_env_var` in Codex - save, and restart the client. It will then answer the 401 by starting the OAuth flow.
+  </Accordion>
+  <Accordion title="The client asks you to sign in when you meant to use a key">
+    The entry has no credential in it. Add the `headers` block with `Authorization: Bearer YOUR_API_KEY`, or in Codex set `bearer_token_env_var = "NEETOAUTH_API_KEY"` and export that variable in the environment Codex starts from. Restart the client afterwards.
+  </Accordion>
+</AccordionGroup>
+
 ## It connects but every call is rejected
 
 <AccordionGroup>
   <Accordion title="Connected with OAuth">
     - The token is scoped to you, so a call fails when your own NeetoAuth permissions do not cover it. Ask a workspace owner to grant the permission, or connect with an API key.
-    - The token is scoped to one workspace. If you approved it for a different workspace than the one you are asking about, remove the server and add it again.
     - Sign in again to refresh an expired token: run `/mcp` in Claude Code, `codex mcp login neetoauth` in Codex, or reconnect from your client's UI.
   </Accordion>
   <Accordion title="Connected with an API key">
@@ -36,6 +48,22 @@ Start with how you connected - the checks differ, and the config-file steps do n
     - In Codex, `bearer_token_env_var` names an environment variable rather than holding the key. Make sure that variable is exported in the environment Codex starts from.
   </Accordion>
 </AccordionGroup>
+
+## A tool is refused for a missing permission
+
+The message names the permission that is missing - **Create and update** or **Delete**. The connection was authorized without that scope, so the tool is refused rather than silently skipped.
+
+Run the sign in again and tick the box on the **Authorize access** screen: **Create and update** for `CreateUser`, **Delete** for `DeactivateUser`. **Read** and **Stay connected** are always granted, so a read that is refused is a permissions problem in NeetoAuth rather than a scope problem. See [What you approve](/mcp/authentication#what-you-approve).
+
+## The assistant sees less than you expected
+
+An OAuth connection acts as the person who approved it, so `ListUsers` and `ListProducts` come back filtered to what that person is allowed to see. That is the scoping working as intended, not a fault. Connect with an API key if the assistant genuinely has to see the whole workspace.
+
+## The assistant reaches the wrong workspace
+
+One connection can cover several workspaces, and every tool takes an optional `workspace` argument. Name the workspace in your prompt, or ask the assistant which workspaces the connection reaches.
+
+If the workspace you want is not among them, run the sign in again and tick it in **Workspaces to connect**. An API key cannot be shared this way - one key is one workspace, so add the server a second time under a different name with the other workspace's key.
 
 ## An invitation is rejected
 
@@ -62,3 +90,5 @@ A JSON document naming the authorization, token, and registration endpoints mean
 ## Still stuck
 
 Compare your setup against [Connect](/mcp/connect), and check [Authentication](/mcp/authentication) to confirm the credential you chose can reach what you are asking for.
+
+Reach us through the [help centre](https://help.neetoauth.com), or at [support@neetoauth.com](mailto:support@neetoauth.com). Tell us which client you are using and what the assistant reports when it tries a NeetoAuth tool.

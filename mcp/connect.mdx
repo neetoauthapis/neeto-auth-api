@@ -33,50 +33,68 @@ Clients that read a config file appear in both columns. Which method they use is
 
 ## Connect with OAuth
 
+Nothing to create in NeetoAuth beforehand. You give the client the server URL and approve the connection in the browser.
+
 <Tabs>
   <Tab title="Claude">
-    Open **Settings → Connectors → Add → Add custom connector**, give it a name such as `NeetoAuth`, and paste:
+    NeetoAuth is not in Anthropic's connector directory, so you add it as a **custom connector**. One connector list backs claude.ai, the Claude desktop app, Claude mobile, and Cowork, so what you add in one shows up in the others.
 
-    ```
-    https://connect.neetoauth.com/mcp/messages
-    ```
+    1. Open **[Settings → Connectors](https://claude.ai/customize/connectors)**, click **Add**, then **Add custom connector**.
 
-    Approve the connection when your browser opens. This works on claude.ai, the Claude desktop app, and Cowork.
+       <Frame caption="Add custom connector is the second item under Add.">
+         <img src="/assets/mcp/claude-add-menu.png" alt="Menu under the Add button in Claude's Connectors settings, with two items, Browse connectors and Add custom connector" />
+       </Frame>
+
+    2. Give it a name such as `NeetoAuth` and paste the server URL:
+
+       ```
+       https://connect.neetoauth.com/mcp/messages
+       ```
+
+       Leave **Advanced settings** alone. The OAuth client ID and secret there are for servers that cannot register clients on their own, and NeetoAuth registers each client itself.
+
+       <Frame caption="The Add custom connector dialog, ready to submit.">
+         <img src="/assets/mcp/claude-add-custom-connector-dialog.png" alt="Claude's Add custom connector dialog with the name NeetoAuth and the server URL https://connect.neetoauth.com/mcp/messages filled in, and empty optional OAuth client fields under Advanced settings" />
+       </Frame>
+
+    3. Click **Add**, then **Connect** to start the sign in described below.
+
+    On a Team plan, adding a custom connector may be restricted to admins. If the option is missing or the connector never becomes usable, ask an admin to enable it under **[Organization settings → Connectors](https://claude.ai/admin-settings/connectors)**.
+
+    To disconnect later, open **[Settings → Connectors](https://claude.ai/customize/connectors)** and remove NeetoAuth.
+
+    Anthropic documents the current steps in [Get started with custom connectors using remote MCP](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp).
   </Tab>
   <Tab title="ChatGPT">
-    Turn on **Settings → Security and login → Developer mode**, then open **Plugins → Browse plugins → + → New Plugin** and paste:
+    Custom MCP servers are added through developer mode.
 
-    ```
-    https://connect.neetoauth.com/mcp/messages
-    ```
+    1. Open **Settings → Security and login** and turn on **Developer mode**. The **Plugins** settings section links straight to it.
 
-    Approve the connection when your browser opens.
+       <Frame>
+         <img src="/assets/mcp/chatgpt-developer-mode.png" alt="ChatGPT's Developer mode setting, tagged Elevated risk, with its toggle switched on" />
+       </Frame>
+
+    2. Go to **Plugins**, click **Browse plugins**, then the **plus** button.
+    3. In **New Plugin**, enter a name, set **Connection** to **Server URL**, and paste:
+
+       ```
+       https://connect.neetoauth.com/mcp/messages
+       ```
+
+    4. Leave **Authentication** on **OAuth**. ChatGPT reads NeetoAuth's OAuth settings from the URL, so **Advanced OAuth settings** needs nothing from you.
+    5. Tick the acknowledgement, click **Create**, and complete the NeetoAuth sign in.
+
+    OpenAI documents the current steps in [Building MCP servers for plugins and API integrations](https://developers.openai.com/api/docs/mcp). They renamed the app directory to the plugin directory in July 2026, so older walkthroughs may say "apps" or "connectors" where the UI now says "plugins".
   </Tab>
   <Tab title="Claude Code">
     ```bash
     claude mcp add --transport http neetoauth https://connect.neetoauth.com/mcp/messages
     ```
 
-    Then run `/mcp` inside Claude Code and choose to sign in. Omitting `--header` is what selects OAuth.
-  </Tab>
-  <Tab title="Codex">
-    Add the server to `~/.codex/config.toml`:
-
-    ```toml
-    [mcp_servers.neetoauth]
-    url = "https://connect.neetoauth.com/mcp/messages"
-    ```
-
-    Then sign in:
-
-    ```bash
-    codex mcp login neetoauth
-    ```
-
-    Codex uses TOML, not JSON.
+    Omitting `--header` is what selects OAuth. Run `claude mcp list` and the server reads `Needs authentication`. Then run `/mcp` inside Claude Code, pick **neetoauth**, and complete the sign in in the browser.
   </Tab>
   <Tab title="Cursor">
-    Create or edit `~/.cursor/mcp.json`:
+    Create or edit `~/.cursor/mcp.json`, or `.cursor/mcp.json` for a single project, with no `headers` block:
 
     ```json
     {
@@ -91,7 +109,7 @@ Clients that read a config file appear in both columns. Which method they use is
     Restart Cursor, then approve the sign-in prompt.
   </Tab>
   <Tab title="Gemini CLI">
-    Edit `~/.gemini/settings.json`:
+    Edit `~/.gemini/settings.json`, or `.gemini/settings.json` for a single project, with no `headers` block:
 
     ```json
     {
@@ -103,10 +121,26 @@ Clients that read a config file appear in both columns. Which method they use is
     }
     ```
 
-    Gemini CLI uses `httpUrl` for streamable HTTP; `url` means SSE. The sign-in flow starts the first time the server answers with a 401.
+    Gemini CLI uses `httpUrl` for streamable HTTP; `url` means SSE. The sign-in flow starts the first time the server answers with a 401, and the client registers itself.
+  </Tab>
+  <Tab title="Codex">
+    Add the server to `~/.codex/config.toml`, or `.codex/config.toml` for a single project, with no credential fields. OAuth is what Codex falls back to when none are given:
+
+    ```toml
+    [mcp_servers.neetoauth]
+    url = "https://connect.neetoauth.com/mcp/messages"
+    ```
+
+    Then sign in:
+
+    ```bash
+    codex mcp login neetoauth
+    ```
+
+    Codex uses TOML, not JSON.
   </Tab>
   <Tab title="VS Code">
-    Create `.vscode/mcp.json` in your workspace:
+    Create `.vscode/mcp.json` in your workspace, with no `headers` block:
 
     ```json
     {
@@ -119,10 +153,10 @@ Clients that read a config file appear in both columns. Which method they use is
     }
     ```
 
-    Requires VS Code 1.99 or later and GitHub Copilot Chat's **Agent** mode. VS Code uses `servers`, not `mcpServers`.
+    Requires VS Code 1.99 or later and GitHub Copilot Chat's **Agent** mode. VS Code uses `servers`, not `mcpServers`. Approve the sign-in prompt when it appears.
   </Tab>
   <Tab title="Windsurf">
-    Edit `~/.codeium/windsurf/mcp_config.json`:
+    Edit `~/.codeium/windsurf/mcp_config.json`, with no `headers` block:
 
     ```json
     {
@@ -134,9 +168,42 @@ Clients that read a config file appear in both columns. Which method they use is
     }
     ```
 
-    Windsurf uses `serverUrl`, not `url`. Enable the server in **Settings → Cascade → MCP Servers**.
+    Windsurf uses `serverUrl`, not `url`. Enable the server in **Settings → Cascade → MCP Servers**, then approve the sign-in prompt.
   </Tab>
 </Tabs>
+
+### What the sign in looks like
+
+Whichever client you started from, NeetoAuth runs the same steps.
+
+<Steps>
+  <Step title="Connect your workspace">
+    Enter the subdomain of the workspace you want the assistant to reach. For `acme.neetoauth.com`, enter `acme`. See [Workspace subdomain](/getting-started/workspace-subdomain).
+
+    <Frame caption="The first screen of the NeetoAuth OAuth flow.">
+      <img src="/assets/mcp/oauth-connect-workspace.png" alt="NeetoAuth dialog headed 'Connect your workspace' with a field for the workspace subdomain, a .neetoauth.com suffix, and a Continue button" />
+    </Frame>
+  </Step>
+  <Step title="Sign in">
+    Sign in to that workspace if you are not signed in already.
+  </Step>
+  <Step title="Authorize access">
+    The screen names the workspace, the email you signed in as, and the host the client sends you back to.
+
+    Under **What this connection can do**, **Read** and **Stay connected** are always granted. **Create and update** and **Delete** are checkboxes: tick **Create and update** to let the assistant invite members, and **Delete** to let it deactivate them.
+
+    **Workspaces to connect** lists every workspace your email belongs to. The one you just signed in to is ticked and cannot be unticked; tick any others the same connection should reach. This section only appears when your email belongs to more than one workspace.
+
+    <Frame caption="The permissions you approve, and the workspaces the connection can reach.">
+      <img src="/assets/mcp/oauth-authorize.png" alt="NeetoAuth 'Authorize access' screen showing the workspace, the signed-in email, a 'What this connection can do' fieldset with Read and Stay connected always granted and Create and update and Delete as checkboxes, a 'Workspaces to connect' list, and Cancel and Authorize buttons" />
+    </Frame>
+  </Step>
+  <Step title="Authorize">
+    Click **Authorize**. The assistant is granted access as you, with your permissions, to each workspace you ticked.
+  </Step>
+</Steps>
+
+There is no API key to create for this route, and nothing to paste back into the assistant. To add a workspace or a permission later, run the sign in again and tick it.
 
 ## Connect with an API key
 
@@ -161,17 +228,6 @@ Replace `YOUR_API_KEY` with your [NeetoAuth API key](/getting-started/authentica
     ```
 
     Save the file, then restart Claude Code.
-  </Tab>
-  <Tab title="Codex">
-    Add the server to `~/.codex/config.toml`:
-
-    ```toml
-    [mcp_servers.neetoauth]
-    url = "https://connect.neetoauth.com/mcp/messages"
-    bearer_token_env_var = "NEETOAUTH_API_KEY"
-    ```
-
-    `bearer_token_env_var` takes the *name* of an environment variable, not the key itself. Export `NEETOAUTH_API_KEY` before starting Codex.
   </Tab>
   <Tab title="Cursor">
     Create or edit `~/.cursor/mcp.json`:
@@ -208,6 +264,17 @@ Replace `YOUR_API_KEY` with your [NeetoAuth API key](/getting-started/authentica
     ```
 
     Gemini CLI uses `httpUrl`, not `url`.
+  </Tab>
+  <Tab title="Codex">
+    Add the server to `~/.codex/config.toml`:
+
+    ```toml
+    [mcp_servers.neetoauth]
+    url = "https://connect.neetoauth.com/mcp/messages"
+    bearer_token_env_var = "NEETOAUTH_API_KEY"
+    ```
+
+    `bearer_token_env_var` takes the *name* of an environment variable, not the key itself. Export `NEETOAUTH_API_KEY` before starting Codex.
   </Tab>
   <Tab title="VS Code">
     Create `.vscode/mcp.json` in your workspace:
@@ -253,4 +320,4 @@ Replace `YOUR_API_KEY` with your [NeetoAuth API key](/getting-started/authentica
 
 ## Verify the connection
 
-After your assistant reloads, confirm that the NeetoAuth tools are listed. Then try a prompt such as *"Which neeto products are enabled in my NeetoAuth workspace?"* Find more in [Examples](/mcp/examples).
+After your assistant reloads, confirm that the NeetoAuth tools are listed. Then try a prompt such as *"Which neeto products are enabled in my NeetoAuth workspace?"* Find more in [Examples](/mcp/examples). If it does not answer, see [Troubleshooting](/mcp/troubleshooting).

@@ -10,7 +10,11 @@ The NeetoAuth MCP server accepts two credentials. They are not interchangeable: 
 | Scope | The person who approved it | The whole workspace |
 | Identity | A NeetoAuth user | None |
 | Set up by | Pasting the server URL | Pasting a key into a config file |
+| Used by | Every client | Every client except Claude and ChatGPT |
+| Reaches several workspaces | Yes, tick them while approving | No, one key is one workspace |
 | Revoked by | Signing out, or revoking the token | Deleting the key |
+
+Claude and ChatGPT always use OAuth. Claude Code, Codex, Cursor, Gemini CLI, VS Code, and Windsurf support both, and you choose by what you put in their config file: leave the credential out and the client signs you in over OAuth, supply one and the client reaches the whole workspace. Both routes hit the same server and expose the same [tools](/mcp/tools).
 
 <Warning>
   An API key is not tied to a person, so the assistant is not limited by anyone's
@@ -22,14 +26,7 @@ The NeetoAuth MCP server accepts two credentials. They are not interchangeable: 
 
 An OAuth token resolves to a NeetoAuth user, so every tool call is checked against that person's permissions. A member who cannot invite people in the NeetoAuth UI cannot invite them through the assistant either, and listings are filtered to what they are allowed to see.
 
-### Sign in
-
-1. Add the server URL to your assistant. See [Connect](/mcp/connect).
-2. The assistant opens NeetoAuth in your browser.
-3. Enter the workspace you want to connect, on the **Connect your workspace** screen.
-4. Sign in and approve the request.
-
-The assistant stores the token and refreshes it on its own. You do not paste anything.
+That makes OAuth the better fit whenever a real person is driving the assistant, because the reach of the connection is the same as the reach of that person's account.
 
 ### What the server supports
 
@@ -39,19 +36,57 @@ The assistant stores the token and refreshes it on its own. You do not paste any
 | **PKCE** | Required, `S256` |
 | **Scopes** | `read`, `write`, `delete`, `offline_access` |
 | **Client registration** | Dynamic, at `https://connect.neetoauth.com/mcp/oauth/register` |
+| **Refresh** | Refresh tokens are issued, so the connection survives without you signing in again |
 | **Revocation** | `https://connect.neetoauth.com/mcp/oauth/revoke` |
 
 Clients discover all of this automatically from `https://connect.neetoauth.com/.well-known/oauth-authorization-server`, so there is nothing to configure by hand.
 
-Because registration is dynamic and accepts loopback redirect URIs, terminal clients such as Claude Code, Codex, and the Gemini CLI can complete the flow the same way a browser client does.
+Because registration is dynamic and accepts loopback redirect URIs such as `http://127.0.0.1:PORT/callback`, terminal and editor clients - Claude Code, Codex, Cursor, the Gemini CLI, VS Code, and Windsurf - complete the flow the same way a browser client does.
+
+### What you approve
+
+The **Authorize access** screen carries a **What this connection can do** fieldset. Two of the four scopes come with every connection; the other two are checkboxes you tick.
+
+| Scope | On the screen | What it allows | Always granted |
+| --- | --- | --- | --- |
+| `read` | **Read** | See everything in the selected workspaces. | Yes |
+| `offline_access` | **Stay connected** | Keep working in the background without asking you to sign in again. | Yes |
+| `write` | **Create and update** | Add new items and change existing ones. | No |
+| `delete` | **Delete** | Permanently delete items. This cannot be undone. | No |
+
+<Frame caption="The scope picker and the workspace list on the NeetoAuth Authorize access screen.">
+  <img src="/assets/mcp/oauth-authorize.png" alt="NeetoAuth 'Authorize access' screen showing the workspace, the signed-in email, a 'What this connection can do' fieldset with Read and Stay connected always granted and Create and update and Delete as checkboxes, a 'Workspaces to connect' list, and Cancel and Authorize buttons" />
+</Frame>
+
+In NeetoAuth these two checkboxes decide a great deal. Without **Create and update** the assistant cannot invite a member, and without **Delete** it cannot deactivate one - `DeactivateUser` is the tool that ends someone's sessions across every neeto product, and `delete` is what unlocks it.
+
+A tool that needs a scope you did not approve is refused at call time with a message naming the missing permission. Nothing is silently skipped, and nothing is half done.
+
+### Sign in
+
+Whichever client you started from, NeetoAuth runs the same four steps.
+
+1. **Connect your workspace.** Enter the subdomain of the workspace you want the assistant to reach. For `acme.neetoauth.com`, enter `acme`. See [Workspace subdomain](/getting-started/workspace-subdomain).
+
+<Frame caption="The first screen of the NeetoAuth OAuth flow.">
+  <img src="/assets/mcp/oauth-connect-workspace.png" alt="NeetoAuth dialog headed 'Connect your workspace' with a field for the workspace subdomain, a .neetoauth.com suffix, and a Continue button" />
+</Frame>
+
+2. **Sign in** to that workspace, if you are not signed in already.
+3. **Authorize access.** The screen names the workspace, the email you signed in as, and the host the client sends you back to. Tick the permissions the client needs, and - when your email belongs to more than one workspace - tick the workspaces the connection should reach.
+4. **Authorize.** The assistant is granted access as you, with your permissions, to each workspace you ticked.
+
+The assistant stores the token and refreshes it on its own. You do not paste anything.
 
 ### Connecting more than one workspace
 
-The consent screen asks which workspace to connect, so a token is granted for one workspace at a time. To reach a second workspace, add the server again under a different name and approve it for that workspace.
+One connection can cover several workspaces. When your email belongs to more than one, the **Authorize access** screen shows a **Workspaces to connect** list. The workspace you signed in to is ticked and cannot be unticked; tick any others the same connection should reach. With a single workspace the list does not appear at all.
+
+Every tool takes an optional `workspace` argument, so name the one you mean in a prompt when the connection reaches more than one. To add a workspace later, run the sign in again and tick it.
 
 ## API key, scoped to the workspace
 
-An API key carries no user identity. The permission checks that apply to an OAuth session are skipped entirely, so the assistant can read and change anything in the workspace.
+An API key carries no user identity. The permission checks that apply to an OAuth session are skipped entirely, so the assistant can read and change anything in the workspace. A key hands its holder more reach than their own role allows.
 
 Use it when the assistant is acting as a service rather than as a person - a scheduled offboarding job, or a shared internal bot - and when you accept that it is not bounded by any individual's permissions.
 
@@ -63,12 +98,19 @@ Create one in your NeetoAuth workspace, then pass it as a bearer token:
 Authorization: Bearer YOUR_API_KEY
 ```
 
-See [API authentication](/getting-started/authentication) for where keys live and how to rotate them.
+See [API authentication](/getting-started/authentication) for where keys live and how to rotate them. The help centre covers the same ground in [Generate an API key](https://help.neetoauth.com/articles/api-keys).
+
+<Tip>
+  A key belongs to one workspace. To let an assistant work with two workspaces,
+  add the server twice with a different key and a different server name in each
+  entry.
+</Tip>
 
 <Warning>
   Treat the key like a password. Anything holding it can invite or deactivate
   members. Do not commit it - `.vscode/mcp.json` in particular lives in your
-  repository. Prefer an environment variable where your client supports one.
+  repository. Prefer an environment variable where your client supports one, and
+  prefer OAuth wherever the client supports it.
 </Warning>
 
 ## How it compares to the API and CLI
@@ -78,4 +120,5 @@ See [API authentication](/getting-started/authentication) for where keys live an
 | Credential | API key | Browser sign-in | OAuth or API key |
 | Acts as | The workspace | The person signed in | The person (OAuth) or the workspace (API key) |
 | Permission checks | Not applied | Applied | Applied with OAuth, skipped with an API key |
+| Where it goes | `X-Api-Key` header on each request | [`neetoauth login`](/cli/authentication), stored in `~/.config/neetoauth/auth.json` | Browser approval, or an `Authorization: Bearer` header in the assistant's config file |
 | Best for | Backend integrations | Scripts and terminals | AI assistants |

@@ -5,7 +5,9 @@ description: "Every tool the NeetoAuth MCP server exposes, and what each one rea
 
 The server exposes four tools across two resources. Each one maps to a NeetoAuth v2 API endpoint - follow the links for the full field and error details.
 
-With OAuth, every tool runs as the person who approved the connection and is checked against their permissions. With an API key, those checks are skipped and the tools reach the whole workspace. See [Authentication](/mcp/authentication).
+What a tool returns depends on the credential. With OAuth, every tool runs as the person who approved the connection and is checked against their permissions, so listings come back filtered to what that person can see. With an API key, those checks are skipped and the tools reach the whole workspace.
+
+An OAuth connection is also bounded by the permissions ticked while approving it: `CreateUser` needs **Create and update**, and `DeactivateUser` needs **Delete**. A tool whose permission was not granted is refused with a message naming it. See [Authentication](/mcp/authentication).
 
 ## Users
 
