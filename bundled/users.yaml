@@ -8,7 +8,7 @@ servers:
     variables:
       your-subdomain:
         default: spinkart
-        description: Replace **spinkart** with your [workspace's subdomain](/getting-started/workspace-subdomain).
+        description: Replace **spinkart** with your [workspace's subdomain](/api/workspace-subdomain).
 paths:
   /users:
     get:
@@ -65,7 +65,7 @@ components:
     api_key_header:
       in: header
       name: X-Api-Key
-      description: Use the X-Api-Key header to provide your workspace API key. Refer to [Authentication](/getting-started/authentication) for more information.
+      description: Use the X-Api-Key header to provide your workspace API key. Refer to [Authentication](/api/authentication) for more information.
       required: true
       schema:
         type: string
@@ -132,7 +132,7 @@ components:
       properties:
         name:
           type: string
-          description: Product name returned by the [List available products](/api-reference/products/list) endpoint.
+          description: Product name returned by the [List available products](/api/products/list) endpoint.
           example: Cal
         role:
           type: string

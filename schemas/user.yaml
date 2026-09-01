@@ -33,7 +33,7 @@ components:
       properties:
         name:
           type: string
-          description: Product name returned by the [List available products](/api-reference/products/list) endpoint.
+          description: Product name returned by the [List available products](/api/products/list) endpoint.
           example: "Cal"
         role:
           type: string

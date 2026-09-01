@@ -1,7 +1,7 @@
 # NeetoAuth API Docs
 
 This repository contains the documentation for the
-[NeetoAuth APIs](https://apidocs.neetoauth.com/getting-started/introduction), built using
+[NeetoAuth APIs](https://apidocs.neetoauth.com/api/introduction), built using
 [Mintlify](https://mintlify.com/).
 
 ## Development Setup

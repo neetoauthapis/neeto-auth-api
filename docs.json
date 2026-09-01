@@ -29,34 +29,34 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "API Reference",
+        "tab": "API",
         "icon": "code",
         "groups": [
           {
             "group": "Getting Started",
             "icon": "rocket",
             "pages": [
-              "getting-started/introduction",
-              "getting-started/workspace-subdomain",
-              "getting-started/authentication",
-              "getting-started/pagination",
-              "getting-started/response-codes"
+              "api/introduction",
+              "api/workspace-subdomain",
+              "api/authentication",
+              "api/pagination",
+              "api/response-codes"
             ]
           },
           {
             "group": "Users",
             "icon": "user-group",
             "pages": [
-              "api-reference/users/list",
-              "api-reference/users/add",
-              "api-reference/users/remove"
+              "api/users/list",
+              "api/users/add",
+              "api/users/remove"
             ]
           },
           {
             "group": "Products",
             "icon": "grid-2",
             "pages": [
-              "api-reference/products/list"
+              "api/products/list"
             ]
           }
         ]
@@ -115,6 +115,32 @@
       }
     ]
   },
+  "redirects": [
+    {
+      "source": "/getting-started/introduction",
+      "destination": "/api/introduction"
+    },
+    {
+      "source": "/getting-started/workspace-subdomain",
+      "destination": "/api/workspace-subdomain"
+    },
+    {
+      "source": "/getting-started/authentication",
+      "destination": "/api/authentication"
+    },
+    {
+      "source": "/getting-started/pagination",
+      "destination": "/api/pagination"
+    },
+    {
+      "source": "/getting-started/response-codes",
+      "destination": "/api/response-codes"
+    },
+    {
+      "source": "/api-reference/:slug*",
+      "destination": "/api/:slug*"
+    }
+  ],
   "api": {
     "params": {
       "expanded": "all"

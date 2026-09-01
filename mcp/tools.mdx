@@ -13,9 +13,9 @@ An OAuth connection is also bounded by the permissions ticked while approving it
 
 | Tool | Reads or writes | What it does |
 | --- | --- | --- |
-| `ListUsers` | Reads | Lists active members with their email, organization role, and name. Optionally filters by an email substring, matched case-insensitively. [API reference](/api-reference/users/list) |
-| `CreateUser` | Writes | Invites a new member and emails them an invitation, optionally granting roles in specific neeto products at the same time. [API reference](/api-reference/users/add) |
-| `DeactivateUser` | Writes | Deactivates an active member by exact email address and destroys their sessions across every neeto product. [API reference](/api-reference/users/remove) |
+| `ListUsers` | Reads | Lists active members with their email, organization role, and name. Optionally filters by an email substring, matched case-insensitively. [API reference](/api/users/list) |
+| `CreateUser` | Writes | Invites a new member and emails them an invitation, optionally granting roles in specific neeto products at the same time. [API reference](/api/users/add) |
+| `DeactivateUser` | Writes | Deactivates an active member by exact email address and destroys their sessions across every neeto product. [API reference](/api/users/remove) |
 
 ### ListUsers
 
@@ -51,7 +51,7 @@ Returns `deactivated` and the `email`. It fails if the user does not exist, is a
 
 | Tool | Reads or writes | What it does |
 | --- | --- | --- |
-| `ListProducts` | Reads | Lists the neeto products enabled for the workspace, each with the role names available in it. [API reference](/api-reference/products/list) |
+| `ListProducts` | Reads | Lists the neeto products enabled for the workspace, each with the role names available in it. [API reference](/api/products/list) |
 
 ### ListProducts
 
