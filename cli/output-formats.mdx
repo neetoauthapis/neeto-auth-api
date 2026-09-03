@@ -14,6 +14,8 @@ Every command can return one of four output formats. In an interactive terminal,
 
 If more than one is set, precedence is `--toon` > `--quiet` > `--json` > pretty.
 
+`--subdomain` is the fourth global flag. It picks the workspace rather than the format; see [Authentication](/cli/authentication#working-with-multiple-workspaces).
+
 ## Pretty
 
 The default in a terminal: tables for lists and key-value pairs for a single record. It is intended for people, not scripts.
@@ -54,9 +56,11 @@ For list commands, `data` is the array of records; the CLI removes the API respo
 
 `breadcrumbs` is omitted when empty, and `pagination` appears only on list commands. The CLI automatically uses JSON when output is piped (a non-TTY); use `--json` to force it.
 
+Commands that only report an outcome, such as `users delete`, `products enable`, and `products disable`, print `{"message": "..."}` instead of `data`.
+
 ## Quiet
 
-`--quiet` returns only the `data` payload, with no envelope and no breadcrumbs. This is useful in scripts:
+`--quiet` returns only the `data` payload, with no envelope and no breadcrumbs. For outcome-only commands such as `users delete` it prints `success`. This is useful in scripts:
 
 ```bash
 neetoauth users list --quiet | jq -r '.[].email'

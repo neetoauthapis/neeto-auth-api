@@ -24,6 +24,14 @@
     "description": "Inspect products and their available roles",
     "subcommands": [
       {
+        "command": "neetoauth products disable",
+        "description": "Disable a product"
+      },
+      {
+        "command": "neetoauth products enable",
+        "description": "Enable a product"
+      },
+      {
         "command": "neetoauth products list",
         "description": "List products available in the workspace and the roles each one exposes"
       }

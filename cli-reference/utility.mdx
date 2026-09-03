@@ -15,9 +15,12 @@ These commands manage the CLI itself rather than a NeetoAuth resource.
 neetoauth login --subdomain your-workspace
 ```
 
-Opens your browser to sign in and saves credentials for the workspace. Omit `--subdomain` to be prompted.
+Opens your browser to sign in and saves credentials for the workspace. Omit `--subdomain` to be prompted. If the browser does not open, the CLI prints the sign-in URL for you to visit, and it waits up to two minutes for you to finish.
 
 ```text Sample output
+Opening browser for authentication...
+If the browser doesn't open, visit: https://acme.neetoauth.com/api/cli/v1/login?token=...
+Waiting for authentication... done!
 Authenticated as oliver@example.com on acme.neetoauth.com.
 ```
 
@@ -34,7 +37,7 @@ neetoauth logout --all
 Signed out of acme.neetoauth.com.
 ```
 
-With `--all`, it prints `Signed out of all subdomains.` instead.
+With `--all`, it prints `Signed out of all subdomains.` instead. With neither flag, it signs out of the only saved workspace, or fails with `multiple subdomains authenticated (acme, globex); specify --subdomain or --all` when several are saved. When nothing is saved it prints `Not authenticated.`.
 
 ### whoami
 
@@ -61,10 +64,10 @@ Checks authentication, API reachability, and the CLI version. See [Troubleshooti
 ```text Sample output
 ✓ Authentication: authenticated as oliver@example.com on acme.neetoauth.com
 ✓ API connection: https://acme.neetoauth.com (responding in 214ms)
-✓ CLI version: 1.0.7
+✓ CLI version: 1.0.10
 ```
 
-A failed check is marked `✗` and carries the underlying error on the next line.
+A failed check is marked `✗`. An authentication failure carries the reason on the same line, and a connection failure carries the underlying error on the next line. When no workspace is signed in and `--subdomain` is not given, the API connection check is skipped.
 
 ### version
 
@@ -74,10 +77,16 @@ neetoauth version
 
 Prints the CLI version, commit hash, and build date.
 
-```json Sample output
+```text Sample output
+neetoauth 1.0.10 (commit: a1b2c3d, built: 2026-08-04)
+```
+
+With `--json`, or when output is piped, it prints the same fields as an object:
+
+```json Sample output (--json)
 {
   "binary": "neetoauth",
-  "version": "1.0.7",
+  "version": "1.0.10",
   "commit": "a1b2c3d",
   "date": "2026-08-04"
 }
@@ -89,7 +98,7 @@ Prints the CLI version, commit hash, and build date.
 neetoauth commands
 ```
 
-Prints the complete command and flag catalog for the installed version as JSON. It is useful in scripts and with AI assistants.
+Prints the complete command and flag catalog for the installed version as JSON. It is useful in scripts and with AI assistants. The catalog leaves out `help`, `completion`, and `commands` itself, and the [global flags](/cli-reference/overview#global-flags) are not repeated under each command.
 
 ```json Sample output
 [
@@ -117,18 +126,18 @@ Prints the complete command and flag catalog for the installed version as JSON. 
 neetoauth update
 ```
 
-Detects how the CLI was installed and runs the matching upgrade for you.
+Detects how the CLI was installed and runs the matching upgrade for you. It always installs the latest release; there is no way to pick an older version.
 
 ```text Sample output
 Detected Homebrew install.
 Running: brew update && brew upgrade neetozone/homebrew-tap/neetoauth
 ```
 
-Outside Homebrew it reports a `shell-script` install on macOS and Linux, or a `Windows` install on Windows, and runs the matching installer.
+Outside Homebrew it reports a `shell-script` install on macOS and Linux, or a `Windows` install on Windows, and runs the matching installer. If the installer fails, the command fails too.
 
 ## AI-assistant setup
 
-Add NeetoAuth instructions to your AI coding assistant. See [AI assistants](/cli/ai-assistants) for details.
+Add NeetoAuth instructions to your AI coding assistant. See [AI assistants](/cli/ai-assistants) for what each target writes.
 
 ```bash
 neetoauth setup claude
@@ -145,17 +154,15 @@ NeetoAuth plugin extracted to /Users/oliver/.config/neetoauth/claude-plugin
 To finish installation, open Claude Code and run these slash commands:
   /plugin marketplace add /Users/oliver/.config/neetoauth/claude-plugin
   /plugin install neetoauth@neetoauth
-
-(Claude Code installs plugins via interactive slash commands — there is no shell equivalent today.)
 ```
 
-The other assistants write a rules or instructions file directly, reporting `Wrote <path>` or `Updated <path>`.
+The other assistants write a rules or instructions file into the current project directory, reporting `Wrote <path>` or `Updated <path>`.
 
 ## Shell completion
 
 Shell completion fills in command names, subcommands, and flags when you press `Tab`. It saves you from having to remember the full command tree or look up `--help`.
 
-`neetoauth completion <shell>` installs completion for your shell. It writes a script under `~/.config/neetoauth/completions` and configures your shell to load it the next time it starts.
+`neetoauth completion <shell>` installs completion for your shell. For zsh, bash, and PowerShell it writes a script under `~/.config/neetoauth/completions` and adds a marked block to `~/.zshrc`, `~/.bashrc`, or `~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1` that loads the script the next time the shell starts. For fish it writes `~/.config/fish/completions/neetoauth.fish`, which fish loads on its own.
 
 <CodeGroup>
 ```bash Zsh

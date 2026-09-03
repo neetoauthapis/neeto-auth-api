@@ -7,20 +7,24 @@ Use the CLI with an AI coding assistant to manage NeetoAuth in plain language. T
 
 ## Set up your assistant
 
-Run the subcommand for the tool you use:
+Run the subcommand for the tool you use. Every target except `claude` writes into the current project directory, so run it from the root of the project the assistant works in.
 
-| Command | What it does |
-| --- | --- |
-| `neetoauth setup claude` | Registers the NeetoAuth plugin with Claude Code (plugin manifest, hooks, and skill). |
-| `neetoauth setup cursor` | Writes NeetoAuth rules for the Cursor IDE. |
-| `neetoauth setup windsurf` | Writes NeetoAuth rules for the Windsurf IDE. |
-| `neetoauth setup copilot` | Adds NeetoAuth instructions for GitHub Copilot. |
-| `neetoauth setup gemini` | Adds NeetoAuth instructions for the Gemini CLI. |
-| `neetoauth setup codex` | Adds NeetoAuth instructions for OpenAI Codex. |
+| Command | What it writes | On re-run |
+| --- | --- | --- |
+| `neetoauth setup claude` | The NeetoAuth plugin (manifest, hooks, and skill) under `~/.config/neetoauth/claude-plugin`. | Replaces the plugin directory. |
+| `neetoauth setup cursor` | `.cursor/rules/neetoauth.mdc` | Overwrites the file. |
+| `neetoauth setup windsurf` | `.windsurf/rules/neetoauth.md` | Overwrites the file. |
+| `neetoauth setup copilot` | A NeetoAuth section in `.github/copilot-instructions.md` | Replaces only the section between the `neetoauth:start` and `neetoauth:end` marker comments and keeps the rest of the file. |
+| `neetoauth setup gemini` | A NeetoAuth section in `GEMINI.md` | Same as `copilot`. |
+| `neetoauth setup codex` | A NeetoAuth section in `AGENTS.md` | Same as `copilot`. |
 
 ```bash
 neetoauth setup claude
 ```
+
+`setup claude` needs Claude Code to have been started at least once, because it checks for `~/.claude`. It then prints two slash commands to run inside Claude Code, `/plugin marketplace add <path>` and `/plugin install neetoauth@neetoauth`, which finish the installation. The other targets report `Wrote <path>` for a new file or `Updated <path>` for an existing one.
+
+Run the setup command again after every CLI upgrade so the assistant has the current instructions.
 
 After setup, your assistant can check the commands and flags available in your installed CLI version:
 
@@ -28,7 +32,7 @@ After setup, your assistant can check the commands and flags available in your i
 neetoauth commands
 ```
 
-The command prints the complete catalog as JSON.
+The command prints the complete catalog as JSON. See [`commands`](/cli-reference/utility#commands) for the shape.
 
 ## Tips for agent workflows
 

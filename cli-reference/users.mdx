@@ -62,12 +62,12 @@ neetoauth users create \
   --role non_owner \
   --first-name Sam \
   --last-name Smith \
-  --app neetocal:admin
+  --app Cal:Admin
 ```
 
 <UsersCreateFlags />
 
-`--role` is the organization role and must be `owner` or `non_owner`. `--app` takes a `name:role` pair and is repeatable, so pass it once per product. Run [`neetoauth products list`](/cli-reference/products) first to see which products and roles exist in the workspace. If `--first-name` or `--last-name` is omitted, the server stores `-`.
+`--role` is the organization role and must be `owner` or `non_owner`. `--app` takes a `name:role` pair and is repeatable, so pass it once per product. Run [`neetoauth products list`](/cli-reference/products) first to see which products and roles exist in the workspace. Names are matched without regard to case, so `--app cal:admin` works too, and the response reports the canonical names. If `--first-name` or `--last-name` is omitted, the server stores `-`.
 
 ```json Sample output (--json)
 {
@@ -77,7 +77,7 @@ neetoauth users create \
     "first_name": "Sam",
     "last_name": "Smith",
     "apps": [
-      { "name": "neetocal", "role": "admin" }
+      { "name": "Cal", "role": "Admin" }
     ]
   },
   "breadcrumbs": [
@@ -107,8 +107,8 @@ The file holds the user object, either bare or wrapped in a `user` key:
     "first_name": "Sam",
     "last_name": "Smith",
     "apps": [
-      { "name": "neetocal", "role": "admin" },
-      { "name": "neetodesk", "role": "agent" }
+      { "name": "Cal", "role": "Admin" },
+      { "name": "Desk", "role": "Agent" }
     ]
   }
 }

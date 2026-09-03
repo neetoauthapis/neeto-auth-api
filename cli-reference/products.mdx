@@ -1,6 +1,6 @@
 ---
 title: "Products"
-description: "List the neeto products enabled in your workspace and the roles each one exposes."
+description: "List the neeto products enabled in your workspace with the roles each one exposes, and enable or disable products."
 ---
 
 A product is a neeto application enabled for your workspace, such as NeetoCal or NeetoDesk. Each one exposes its own set of roles. For fields and response details, see the [API reference](/api/products/list).
@@ -9,7 +9,7 @@ Samples on this page use `--json`, because pretty table output depends on your t
 
 ## List products
 
-This command shows which neeto products your workspace has, along with the role names available in each. Use it before [inviting a user](/cli-reference/users#invite-a-user), so the `--app name:role` pairs you pass are ones the workspace actually accepts.
+This command shows which neeto products your workspace has enabled, along with the role names available in each. Use it before [inviting a user](/cli-reference/users#invite-a-user), so the `--app name:role` pairs you pass are ones the workspace actually accepts.
 
 ```bash
 neetoauth products list
@@ -19,12 +19,12 @@ neetoauth products list
 {
   "data": [
     {
-      "name": "neetocal",
-      "roles": ["admin", "standard"]
+      "name": "Cal",
+      "roles": ["Admin", "Standard"]
     },
     {
-      "name": "neetodesk",
-      "roles": ["admin", "agent", "viewer"]
+      "name": "Desk",
+      "roles": ["Admin", "Agent"]
     }
   ],
   "breadcrumbs": [
@@ -42,6 +42,42 @@ neetoauth products list
 }
 ```
 
-Combine a `name` with one of its `roles` to build an `--app` value, for example `--app neetodesk:agent`.
+Combine a `name` with one of its `roles` to build an `--app` value, for example `--app Desk:Agent`. Names are matched without regard to case, so `--app desk:agent` works too. Disabled products are left out of the list.
 
 This command takes no flags of its own beyond the [global flags](/cli-reference/overview#global-flags).
+
+## Enable a product
+
+This command turns a neeto product on for your workspace. Use it when the workspace needs a product it does not have yet, or to bring back one that was disabled.
+
+```bash
+neetoauth products enable Desk
+```
+
+**Required arguments:**
+
+- `<product>` - the product `name`, matched without regard to case (`Desk` and `desk` both work)
+
+```text Sample output
+Product "Desk" enabled.
+```
+
+With `--json` the CLI prints `{"message":"Product \"Desk\" enabled."}`, and with `--quiet` it prints `success`. Enabling a product needs permission to manage workspace settings, so a member without it gets a 403 error.
+
+## Disable a product
+
+This command turns a neeto product off for your workspace. Use it when the workspace no longer uses a product.
+
+```bash
+neetoauth products disable Desk
+```
+
+**Required arguments:**
+
+- `<product>` - the product `name`, matched without regard to case
+
+```text Sample output
+Product "Desk" disabled.
+```
+
+A disabled product no longer appears in `neetoauth products list`, so keep its name if you plan to enable it again. If the name does not match a product in the workspace, the command fails with `product "Desk" not found. Run "neetoauth products list" to see available products`.

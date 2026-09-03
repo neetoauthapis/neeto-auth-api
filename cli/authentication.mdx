@@ -11,7 +11,7 @@ The CLI uses your browser to sign you in and securely saves your session, so you
 neetoauth login --subdomain your-workspace
 ```
 
-Your browser opens to complete sign-in. Once you approve it, the CLI saves credentials for that subdomain. If you omit `--subdomain`, the CLI prompts for it.
+Your browser opens to complete sign-in. Once you approve it, the CLI saves credentials for that subdomain. If you omit `--subdomain`, the CLI prompts for it. If the browser does not open, the CLI prints the sign-in URL for you to visit. Sign-in must finish within two minutes; after that the CLI reports a timeout and you run `neetoauth login` again.
 
 <Tip>
   Your subdomain is the first part of your workspace URL - for
@@ -27,6 +27,15 @@ Credentials for every signed-in workspace live in a single file:
 ```
 
 Removing this file signs you out of every workspace, the same as `neetoauth logout --all`.
+
+## Pointing at another server
+
+Set `NEETOAUTH_BASE_URL` to make every command, including `login`, talk to that address instead of `https://<subdomain>.neetoauth.com`. This is meant for staging or local servers.
+
+```bash
+export NEETOAUTH_BASE_URL=http://acme.lvh.me:8980
+neetoauth login --subdomain acme
+```
 
 ## Check who you are
 

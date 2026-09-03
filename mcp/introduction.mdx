@@ -42,7 +42,7 @@ Read [Authentication](/mcp/authentication) before you connect - it decides what 
 
 ## MCP vs CLI: which should I use?
 
-NeetoAuth's [CLI](/cli/introduction) reaches the same two resources MCP does - workspace members and products - through the same four operations: list members, invite one, remove one, and list the enabled products with their roles. Neither one can grant or revoke access the other cannot, so choose on how the work reaches NeetoAuth. The one gap is small: `ListUsers` filters by an email substring and the CLI has no flag for that, but the CLI's `--quiet` output piped through `jq` narrows the same list.
+NeetoAuth's [CLI](/cli/introduction) reaches the same two resources MCP does - workspace members and products. Both list members, invite one, remove one, and list the enabled products with their roles. Two gaps are small: `ListUsers` filters by an email substring and the CLI has no flag for that, but the CLI's `--quiet` output piped through `jq` narrows the same list; and the CLI can enable or disable a product, which MCP cannot. Otherwise neither one can grant or revoke access the other cannot, so choose on how the work reaches NeetoAuth.
 
 ### Reach for MCP when
 
