@@ -3,11 +3,26 @@ title: "Tools"
 description: "Every tool the NeetoAuth MCP server exposes, and what each one reaches."
 ---
 
-The server exposes four tools across two resources. Each one maps to a NeetoAuth v2 API endpoint - follow the links for the full field and error details.
+The server exposes five tools across three resources. Most map to a NeetoAuth v2 API endpoint - follow the links for the full field and error details.
 
 What a tool returns depends on the credential. With OAuth, every tool runs as the person who approved the connection and is checked against their permissions, so listings come back filtered to what that person can see. With an API key, those checks are skipped and the tools reach the whole workspace.
 
 An OAuth connection is also bounded by the permissions ticked while approving it: `CreateUser` needs **Create and update**, and `DeactivateUser` needs **Delete**. A tool whose permission was not granted is refused with a message naming it. See [Authentication](/mcp/authentication).
+
+## Workspaces
+
+| Tool | Reads or writes | What it does |
+| --- | --- | --- |
+| `ListWorkspaces` | Reads | Lists the workspaces this connection can access. Pass a returned subdomain as the `workspace` argument of other tools to target that workspace. |
+
+### ListWorkspaces
+
+| Argument | Required | Description |
+| --- | --- | --- |
+| `page` | | Page number (default: 1) |
+| `page_size` | | Workspaces per page (default: 15, max: 100) |
+
+Returns `workspaces`, each with `name`, `subdomain` and `default` (whether it is the workspace tools run against when none is named), alongside `total_count`, `page`, `total_pages` and `page_size`. Ordered by name.
 
 ## Users
 
