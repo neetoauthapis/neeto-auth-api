@@ -22,47 +22,47 @@ neetoauth doctor --subdomain your-workspace
 When a command fails, it prints an error message to standard error and exits with status 1. For a usage mistake, such as an unknown flag or a missing argument, it adds `Run 'neetoauth --help' for usage.`
 
 <AccordionGroup>
-  <Accordion title="not authenticated. Run 'neetoauth login' to authenticate">
+  <Accordion title="Not authenticated. Run 'neetoauth login' to authenticate.">
     **Problem**: no workspace is signed in. <br />
     **Solution**: run [`neetoauth login --subdomain <name>`](/cli/authentication).
   </Accordion>
-  <Accordion title="multiple subdomains authenticated (acme, globex); specify --subdomain">
+  <Accordion title="Multiple subdomains authenticated (acme, globex); specify --subdomain.">
     **Problem**: more than one workspace is signed in, so the target is ambiguous. <br />
     **Solution**: add `--subdomain <name>` to the command. For `logout`, `--all` is also accepted.
   </Accordion>
-  <Accordion title='not authenticated for "foo". Authenticated subdomains: acme, globex'>
+  <Accordion title='Not authenticated for "foo". Authenticated subdomains: acme, globex.'>
     **Problem**: the `--subdomain` value does not match any signed-in workspace. <br />
     **Solution**: use one of the listed subdomains, or [sign in](/cli/authentication) to the new one.
   </Accordion>
-  <Accordion title="subdomain not found, please check that you entered the correct subdomain">
+  <Accordion title="Subdomain not found. Please check that you entered the correct subdomain.">
     **Problem**: `login` could not find a workspace at that subdomain. <br />
     **Solution**: use only the first part of your workspace URL. For `https://acme.neetoauth.com`, enter `acme`.
   </Accordion>
-  <Accordion title="neetoauth cli authentication timed out after 2 minutes, please try again">
-    **Problem**: `login` waited two minutes without the browser sign-in finishing. The related message `authentication session expired, please try again` means the server ended the sign-in session first. <br />
+  <Accordion title="NeetoAuth CLI authentication timed out after 2 minutes. Please try again.">
+    **Problem**: `login` waited two minutes without the browser sign-in finishing. The related message `Authentication session expired. Please try again.` means the server ended the sign-in session first. <br />
     **Solution**: run `neetoauth login` again and finish the browser step promptly. If the browser did not open, visit the URL the CLI printed.
   </Accordion>
-  <Accordion title="could not connect to NeetoAuth. Check your internet connection">
+  <Accordion title="Could not connect to NeetoAuth. Check your internet connection">
     **Problem**: the CLI could not reach your workspace. <br />
     **Solution**: check your network and any proxy, then run `neetoauth doctor` to confirm the API is reachable.
   </Accordion>
-  <Accordion title="--email is required">
+  <Accordion title="--email is required.">
     **Problem**: `users create` ran without an email address. <br />
     **Solution**: pass `--email <address>`, or supply it in the file given to `--json-file`.
   </Accordion>
-  <Accordion title="--role is required (e.g. owner, non_owner)">
+  <Accordion title="--role is required (e.g. owner, non_owner).">
     **Problem**: `users create` ran without an organization role. <br />
     **Solution**: pass `--role owner` or `--role non_owner`. This is the organization-level role, not a product role.
   </Accordion>
-  <Accordion title='invalid --app value "Cal" (expected name:role)'>
+  <Accordion title='Invalid --app value "Cal" (expected name:role).'>
     **Problem**: an `--app` value is missing the role half. <br />
     **Solution**: write it as `name:role`, for example `--app Cal:Admin`. Run `neetoauth products list` to see the valid pairs.
   </Accordion>
-  <Accordion title='product "Foo" not found. Run "neetoauth products list" to see available products'>
+  <Accordion title='Product "Foo" not found. Run "neetoauth products list" to see available products.'>
     **Problem**: `products enable` or `products disable` was given a name that is not a product in the workspace. <br />
     **Solution**: use the `name` shown by `neetoauth products list`. Names are matched without regard to case.
   </Accordion>
-  <Accordion title="claude Code not found (~/.claude/ does not exist)">
+  <Accordion title="Claude Code not found (~/.claude/ does not exist).">
     **Problem**: `setup claude` ran on a machine where Claude Code has never been started. <br />
     **Solution**: install and open Claude Code once, then run `neetoauth setup claude` again.
   </Accordion>
