@@ -1,13 +1,13 @@
 ---
 title: "NeetoAuth MCP"
-description: "Let an AI assistant manage workspace members and product roles through the Model Context Protocol."
+description: "Manage workspace members and product roles from an AI assistant in plain language."
 ---
 
-The **NeetoAuth MCP server** exposes your workspace to AI assistants through the [Model Context Protocol](https://modelcontextprotocol.io). Once connected, an assistant can read your member list, see which neeto products are enabled and what roles they offer, invite new members, and deactivate ones who have left - all in plain language.
+The NeetoAuth **MCP server** lets your AI assistant manage your workspace from plain-language requests. Ask it to list members, check which products are enabled, invite a new member, or deactivate one who has left, and it works with your NeetoAuth workspace for you.
 
-NeetoAuth hosts the server, so there is nothing to install or run locally.
+[MCP](https://modelcontextprotocol.io) (Model Context Protocol) is an open standard that connects AI assistants to tools such as NeetoAuth. You describe the task; the assistant uses the right tool.
 
-## What it can do
+## What you can do
 
 <CardGroup cols={2}>
   <Card title="Answer questions about access" icon="magnifying-glass">
@@ -19,59 +19,51 @@ NeetoAuth hosts the server, so there is nothing to install or run locally.
   <Card title="Offboard people who leave" icon="user-minus">
     Deactivate a member and end their sessions across every neeto product at once.
   </Card>
-  <Card title="Discover products and roles" icon="grid-2">
-    List the enabled products with the role names each one exposes, so grants use values the workspace accepts.
+  <Card title="Hand off the busywork" icon="robot">
+    Ask your assistant to onboard a new hire from an offer letter, or find and deactivate everyone who left last quarter.
   </Card>
 </CardGroup>
 
-See [Tools](/mcp/tools) for the full list.
-
-## Choose how it signs in
-
-The server accepts two credentials, and the difference is a permissions boundary rather than a setup preference:
-
-| | OAuth | API key |
-| --- | --- | --- |
-| Scope | The person who approved it | The whole workspace |
-| Identity | A NeetoAuth user | None |
-| Set up by | Pasting the server URL | Pasting a key into a config file |
-
-An OAuth connection acts as you and sees what you see. An API key acts as the workspace and sees everything in it. Every supported client can sign in over OAuth, so a key is needed only when you want that workspace-wide reach.
-
-Read [Authentication](/mcp/authentication) before you connect - it decides what the assistant is allowed to do, and inviting or deactivating members is not a reversible mistake.
-
 ## MCP vs CLI: which should I use?
 
-NeetoAuth's [CLI](/cli/introduction) reaches the same two resources MCP does - workspace members and products. Both list members, invite one, remove one, and list the enabled products with their roles. Two gaps are small: `ListUsers` filters by an email substring and the CLI has no flag for that, but the CLI's `--quiet` output piped through `jq` narrows the same list; and the CLI can enable or disable a product, which MCP cannot. Otherwise neither one can grant or revoke access the other cannot, so choose on how the work reaches NeetoAuth.
+NeetoAuth's [CLI](/cli/introduction) reaches the same resources MCP does - workspace members and products. Two gaps are small: `ListUsers` filters by an email substring and the CLI has no flag for that, but the CLI's `--quiet` output piped through `jq` narrows the same list; and the CLI can enable or disable a product, which MCP cannot. Otherwise neither one can grant or revoke access the other cannot, so choose on how the work reaches NeetoAuth.
 
 ### Reach for MCP when
 
-- **The details live in your chat, not in your head.** An offer letter, a Slack thread, or a pasted IT ticket becomes the invitation - address, name, and the products the person needs - with no retyping. The CLI cannot see any of it.
-- **You have not decided the steps yet.** "These contractors finished last week - make sure they are out" means reading the member list, matching it against what you have, and choosing who goes. A command can only carry out a decision you have already made.
-- **One request should cover several steps.** Find out which products the workspace has and what roles each one exposes, invite the person with those grants, then read back the grants the server resolved - no glue between commands.
-- **The person doing it does not use a terminal.** Onboarding is usually run by whoever handles new joiners rather than by an engineer. NeetoAuth hosts the server, so there is nothing to install or keep updated.
+- **The details live in your chat, not in your head.** An offer letter, a Slack thread, or a pasted IT ticket turns into the invitation, with no retyping. The CLI cannot see any of it.
+- **You have not decided the steps yet.** "These contractors finished last week - make sure they are out" means looking at what is there and choosing. A command can only carry out a decision you have already made.
+- **One request should cover several steps.** Find out which products the workspace has and what roles each one exposes, invite the person with those grants, then read back the grants the server resolved, with no glue between commands.
+- **The person doing it does not use a terminal.** NeetoAuth hosts the server, so there is nothing to install or keep updated.
 
 ### Reach for the CLI instead when
 
-- **No AI assistant should be in the loop.** An offboarding script or a CI step runs the CLI against a workspace it is already signed in to - no assistant open, no model account, no tokens spent per run. Every call here needs something with model access running.
-- **The output feeds another program.** The CLI's `--quiet` prints a bare address list for `jq`, a spreadsheet, or your own script, and `--json` adds the `pagination` block. Here you get prose you would have to copy out by hand.
-- **You are working through the whole member list.** Here every page is a separate tool call, and a roster of a few thousand people crowds out the assistant's context. The CLI returns `total_pages` and `total_records` next to the records, so a shell loop walks every page unattended and writes each one to a file or into `jq` - the size of the workspace stops mattering.
-- **The grant has to be repeatable and reviewable.** A command is the artifact: it records exactly which product role was handed out and repeats identically. Ask twice here and the assistant may resolve a different role.
+- **No AI assistant should be in the loop.** A cron entry or a CI step runs the CLI with nothing but the binary and a workspace it is already signed in to - no assistant open, no model account, no tokens spent per run. Every MCP call needs something with model access running.
+- **The output feeds another program.** The CLI prints a bare identifier or raw JSON for `jq`, a spreadsheet, or your own script. Here you get prose you would have to copy out by hand.
+- **You are working through thousands of records.** Here every page is a separate tool call, and a member list that long crowds out the assistant's context. The CLI returns `total_pages` next to the records, so a shell loop walks every page unattended and writes each one to a file or into `jq` - the size of the workspace stops mattering.
+- **The run has to be repeatable and reviewable.** A command is the artifact: it records exactly what ran and repeats identically. Ask twice here and the assistant may take a different route.
 
 <Tip>
   You can have both. Run [`neetoauth setup claude`](/cli/ai-assistants) and the
-  same assistant drives the CLI for you, so a plain-language request still
-  ends in an exact command you can read, repeat, and paste into a script.
+  same assistant drives the CLI for you, so a plain-language request still ends
+  in an exact command you can read, repeat, and paste into a script.
 </Tip>
 
 <Warning>
   Ask your assistant to show you the invitation or the deactivation before it
-  runs. Deactivating someone ends their sessions across every neeto product and
-  is reversible only through the NeetoAuth admin UI.
+  runs. These tools act on your live workspace, and deactivating someone ends
+  their sessions across every neeto product and is reversible only through the
+  NeetoAuth admin UI.
 </Warning>
 
 ## What you need
 
-1. A NeetoAuth workspace.
-2. An AI assistant that supports remote MCP servers. See [Connect](/mcp/connect).
-3. For workspace-scoped access only, a NeetoAuth API key. Every supported client can use OAuth instead, so the key is optional.
+- An AI assistant that supports MCP. Setup steps for Claude, ChatGPT, Claude Code, Codex, Cursor, Gemini CLI, VS Code with GitHub Copilot, Windsurf, and Antigravity are on [Connect](/mcp/connect).
+- A NeetoAuth API key, but only for workspace scoped access, and for Antigravity, where it is the only documented route. Every other client can sign you in over OAuth instead, which needs nothing beyond the server URL. See [Authentication](/mcp/authentication).
+
+The choice decides what the assistant can reach: an OAuth connection acts as you and sees what you see, while an API key acts as the workspace and sees everything in it.
+
+<Note>
+  An OAuth connection is approved in the browser, much as the [CLI](/cli/authentication) signs you in, and you decide there whether the assistant may create, update, or delete. An API key is the same one the [REST API](/api/authentication) uses, passed as a bearer token from your assistant's config, and it carries every permission for the whole workspace.
+</Note>
+
+[Connect your assistant](/mcp/connect) to get started.
