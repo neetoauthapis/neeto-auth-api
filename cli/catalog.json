@@ -88,7 +88,8 @@
           {
             "name": "email",
             "type": "string",
-            "description": "Member email address (required)"
+            "description": "Member email address",
+            "required": true
           },
           {
             "name": "first-name",
@@ -108,7 +109,8 @@
           {
             "name": "role",
             "type": "string",
-            "description": "Organization role, e.g. owner or non_owner (required)"
+            "description": "Organization role, e.g. owner or non_owner",
+            "required": true
           }
         ]
       },
