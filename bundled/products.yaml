@@ -12,8 +12,8 @@ servers:
 paths:
   /products:
     get:
-      summary: List available products
-      description: Lists the enabled and available products in the workspace.
+      summary: List products
+      description: Lists the products the workspace can see, enabled or not, together with the roles each one exposes. Use the enabled field to tell them apart. Products the workspace is not shown, such as ones still in private production, are left out.
       parameters:
         - $ref: '#/components/parameters/api_key_header'
         - $ref: '#/components/parameters/page_number_param'
@@ -69,11 +69,15 @@ components:
           type: integer
     Product:
       type: object
-      description: Enabled and available workspace product with its configured roles.
+      description: A product the workspace can see, with its enabled state and configured roles.
       properties:
         name:
           type: string
           example: Cal
+        enabled:
+          type: boolean
+          description: Whether the product is currently enabled for the workspace.
+          example: true
         roles:
           type: array
           items:

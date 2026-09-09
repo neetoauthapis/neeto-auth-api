@@ -2,11 +2,15 @@ components:
   schemas:
     Product:
       type: object
-      description: Enabled and available workspace product with its configured roles.
+      description: A product the workspace can see, with its enabled state and configured roles.
       properties:
         name:
           type: string
           example: "Cal"
+        enabled:
+          type: boolean
+          description: Whether the product is currently enabled for the workspace.
+          example: true
         roles:
           type: array
           items:

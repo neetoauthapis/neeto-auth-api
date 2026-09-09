@@ -21,19 +21,33 @@
   },
   {
     "command": "neetoauth products",
-    "description": "Inspect products and their available roles",
+    "description": "Inspect products, whether they are enabled, and their available roles",
     "subcommands": [
       {
         "command": "neetoauth products disable",
-        "description": "Disable a product"
+        "description": "Disable a product",
+        "flags": [
+          {
+            "name": "product",
+            "type": "string",
+            "description": "Name of the product to disable"
+          }
+        ]
       },
       {
         "command": "neetoauth products enable",
-        "description": "Enable a product"
+        "description": "Enable a product",
+        "flags": [
+          {
+            "name": "product",
+            "type": "string",
+            "description": "Name of the product to enable"
+          }
+        ]
       },
       {
         "command": "neetoauth products list",
-        "description": "List products available in the workspace and the roles each one exposes"
+        "description": "List every product in the workspace with its enabled state and the roles it exposes"
       }
     ]
   },

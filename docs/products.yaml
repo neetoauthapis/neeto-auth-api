@@ -9,8 +9,12 @@ servers:
 paths:
   /products:
     get:
-      summary: List available products
-      description: Lists the enabled and available products in the workspace.
+      summary: List products
+      description: >-
+        Lists the products the workspace can see, enabled or not, together with
+        the roles each one exposes. Use the enabled field to tell them apart.
+        Products the workspace is not shown, such as ones still in private
+        production, are left out.
       parameters:
         - $ref: "../schemas/common.yaml#/api_key_header"
         - $ref: "../schemas/common.yaml#/page_number_param"
