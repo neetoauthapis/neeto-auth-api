@@ -1,5 +1,7 @@
 # NeetoAuth API Docs
 
+Read this [KB](https://neetozone.neetokb.com/p/a-38cdb178) to see how things are setup.
+
 This repository contains the documentation for the
 [NeetoAuth APIs](https://apidocs.neetoauth.com/api/introduction), built using
 [Mintlify](https://mintlify.com/).
