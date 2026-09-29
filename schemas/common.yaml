@@ -20,7 +20,7 @@ api_key_header:
 page_number_param:
   in: query
   name: page_number
-  description: Retrieve paginated results by specifying the desired page number. Defaulting to 1 when omitted.
+  description: Page of results to retrieve, starting from 1. Defaults to 1 when omitted.
   required: false
   schema:
     type: integer
@@ -28,7 +28,7 @@ page_number_param:
 page_size_param:
   in: query
   name: page_size
-  description: Set the number of results returned in the response. Defaulting to 30 when omitted.
+  description: Number of results per page. Defaults to 30 when omitted.
   required: false
   schema:
     type: integer

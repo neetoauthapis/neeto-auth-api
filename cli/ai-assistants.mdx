@@ -7,24 +7,29 @@ Use the CLI with an AI coding assistant to manage NeetoAuth in plain language. T
 
 ## Set up your assistant
 
-Run the subcommand for the tool you use. Every target except `claude` writes into the current project directory, so run it from the root of the project the assistant works in.
+Run the subcommand for the tool you use:
 
-| Command | What it writes | On re-run |
-| --- | --- | --- |
-| `neetoauth setup claude` | The NeetoAuth plugin (manifest, hooks, and skill) under `~/.config/neetoauth/claude-plugin`. | Replaces the plugin directory. |
-| `neetoauth setup cursor` | `.cursor/rules/neetoauth.mdc` | Overwrites the file. |
-| `neetoauth setup windsurf` | `.windsurf/rules/neetoauth.md` | Overwrites the file. |
-| `neetoauth setup copilot` | A NeetoAuth section in `.github/copilot-instructions.md` | Replaces only the section between the `neetoauth:start` and `neetoauth:end` marker comments and keeps the rest of the file. |
-| `neetoauth setup gemini` | A NeetoAuth section in `GEMINI.md` | Same as `copilot`. |
-| `neetoauth setup codex` | A NeetoAuth section in `AGENTS.md` | Same as `copilot`. |
+| Command | What it does |
+| --- | --- |
+| `neetoauth setup claude` | Extracts the NeetoAuth plugin (manifest, marketplace, session-start hook, and skill) to `~/.config/neetoauth/claude-plugin`, replacing any earlier copy. Requires `~/.claude/` to exist. |
+| `neetoauth setup cursor` | Writes `.cursor/rules/neetoauth.mdc`. Overwrites the file. |
+| `neetoauth setup windsurf` | Writes `.windsurf/rules/neetoauth.md`. Overwrites the file. |
+| `neetoauth setup copilot` | Adds a NeetoAuth section to `.github/copilot-instructions.md`. Keeps the rest of the file. |
+| `neetoauth setup gemini` | Adds a NeetoAuth section to `GEMINI.md`. Keeps the rest of the file. |
+| `neetoauth setup codex` | Adds a NeetoAuth section to `AGENTS.md`. Keeps the rest of the file. |
+
+Every subcommand except `setup claude` writes into the current directory, so run it from the root of the project the assistant works in. The `copilot`, `gemini`, and `codex` commands place their section between `<!-- neetoauth:start -->` and `<!-- neetoauth:end -->` markers and replace that section on re-run instead of adding a duplicate. Re-run the command after every CLI upgrade so the instructions match the installed version.
 
 ```bash
 neetoauth setup claude
 ```
 
-`setup claude` needs Claude Code to have been started at least once, because it checks for `~/.claude`. It then prints two slash commands to run inside Claude Code, `/plugin marketplace add <path>` and `/plugin install neetoauth@neetoauth`, which finish the installation. The other targets report `Wrote <path>` for a new file or `Updated <path>` for an existing one.
+`setup claude` prints two slash commands to finish the installation inside Claude Code:
 
-Run the setup command again after every CLI upgrade so the assistant has the current instructions.
+```text
+/plugin marketplace add ~/.config/neetoauth/claude-plugin
+/plugin install neetoauth@neetoauth
+```
 
 After setup, your assistant can check the commands and flags available in your installed CLI version:
 
@@ -32,14 +37,14 @@ After setup, your assistant can check the commands and flags available in your i
 neetoauth commands
 ```
 
-The command prints the complete catalog as JSON. See [`commands`](/cli-reference/utility#commands) for the shape.
+The command prints the complete catalog as JSON.
 
 ## Tips for agent workflows
 
 <Tip>
-  Prefer `--toon` when the assistant needs to read a list, and `--quiet` when it
-  needs to pipe a value into the next command. See [Output
-  formats](/cli/output-formats).
+  Prefer `--toon` when the assistant needs to read a list or record, and
+  `--quiet` when it needs to pipe an identifier into the next command. See
+  [Output formats](/cli/output-formats).
 </Tip>
 
 - Authenticate once with [`neetoauth login`](/cli/authentication); the assistant reuses the stored credentials.

@@ -8,11 +8,9 @@ import ProductsDisableFlags from '/snippets/cli/products/disable.mdx'
 
 A product is a neeto application available to your workspace, such as NeetoCal or NeetoDesk. Each one is either enabled or disabled, and each exposes its own set of roles. For fields and response details, see the [API reference](/api/products/list).
 
-Samples on this page use `--json`, because pretty table output depends on your terminal width.
-
 ## List products
 
-This command shows the neeto products your workspace can see, whether or not they are enabled, along with the role names available in each. Use it before [inviting a user](/cli-reference/users#invite-a-user), so the `--app name:role` pairs you pass are ones the workspace actually accepts, and use it to find the name to pass to `enable` or `disable`.
+This command shows the neeto products your workspace can see, whether or not they are enabled, along with the role names available in each. Use this before [creating a user](/cli-reference/users#create-a-user), so the `--app name:role` pairs you pass are ones the workspace actually accepts, and use it to find the name to pass to `enable` or `disable`.
 
 ```bash
 neetoauth products list
@@ -68,7 +66,7 @@ This command takes no flags of its own beyond the [global flags](/cli-reference/
 
 ## Enable a product
 
-This command turns a neeto product on for your workspace. Use it when the workspace needs a product it does not have yet, or to bring back one that was disabled.
+This command turns a neeto product on for your workspace. Use this when the workspace needs a product it does not have yet, or to bring back one that was disabled.
 
 ```bash
 neetoauth products enable --product Desk
@@ -86,7 +84,7 @@ With `--json` the CLI prints `{"message":"Product \"Desk\" enabled."}`, and with
 
 ## Disable a product
 
-This command turns a neeto product off for your workspace. Use it when the workspace no longer uses a product.
+This command turns a neeto product off for your workspace. Use this when the workspace no longer uses a product.
 
 ```bash
 neetoauth products disable --product Desk

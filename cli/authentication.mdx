@@ -11,32 +11,23 @@ The CLI uses your browser to sign you in and securely saves your session, so you
 neetoauth login --subdomain your-workspace
 ```
 
-Your browser opens to complete sign-in. Once you approve it, the CLI saves credentials for that subdomain. If you omit `--subdomain`, the CLI prompts for it. If the browser does not open, the CLI prints the sign-in URL for you to visit. Sign-in must finish within two minutes; after that the CLI reports a timeout and you run `neetoauth login` again.
+Your browser opens to complete sign-in. The CLI also prints the sign-in URL in case the browser does not open, and waits up to five minutes for you to approve. Once you approve it, the CLI saves credentials for that subdomain. If you omit `--subdomain`, the CLI prompts for it.
 
 <Tip>
   Your subdomain is the first part of your workspace URL - for
-  `https://spinkart.neetoauth.com`, the subdomain is `spinkart`.
-  See [Workspace subdomain](/cli/workspace-subdomain).
+  `https://spinkart.neetoauth.com`, the subdomain is `spinkart`. See
+  [Workspace subdomain](/cli/workspace-subdomain).
 </Tip>
 
 ## Where credentials are stored
 
 Credentials for every signed-in workspace live in a single file:
 
-```
+```text
 ~/.config/neetoauth/auth.json
 ```
 
 Removing this file signs you out of every workspace, the same as `neetoauth logout --all`.
-
-## Pointing at another server
-
-Set `NEETOAUTH_BASE_URL` to make every command, including `login`, talk to that address instead of `https://<subdomain>.neetoauth.com`. This is meant for staging or local servers.
-
-```bash
-export NEETOAUTH_BASE_URL=http://acme.lvh.me:8980
-neetoauth login --subdomain acme
-```
 
 ## Check who you are
 
@@ -62,7 +53,7 @@ You can sign in to several subdomains at once. To add another workspace, name it
 neetoauth login --subdomain globex
 ```
 
-When more than one workspace is signed in, every command that talks to the API requires `--subdomain`, including `doctor`. If you omit it, the CLI errors and lists the signed-in workspaces.
+When more than one workspace is signed in, every command that talks to the API requires `--subdomain`. If you omit it, the CLI errors and lists the signed-in workspaces.
 
 ```bash
 neetoauth users list --subdomain acme
@@ -71,9 +62,18 @@ neetoauth users list --subdomain globex
 
 With one signed-in workspace, it is the default and `--subdomain` stays optional.
 
+## Environment variables
+
+`NEETOAUTH_BASE_URL` overrides the server the CLI talks to. By default every command, including `login`, uses `https://<subdomain>.neetoauth.com`. Set the variable to point the CLI at a staging or local server. Every request, including the session token saved in `~/.config/neetoauth/auth.json`, goes to that server, so only point it at a server you trust:
+
+```bash
+export NEETOAUTH_BASE_URL=https://acme.neetoauth.net
+neetoauth login --subdomain acme
+```
+
 ## What your session can do
 
-A CLI session acts as you, not as the workspace. Commands are checked against your own permissions, so a member who cannot invite people in the NeetoAuth UI cannot invite them through the CLI either. This differs from an API key, which is not tied to a person and is scoped to the whole workspace.
+A CLI session acts as you, not as the workspace. Commands are checked against your own permissions, so a member who cannot invite people in the NeetoAuth UI cannot invite them through the CLI either. An API key is different: it is not tied to a person and is scoped to the whole workspace.
 
 ## Troubleshooting
 

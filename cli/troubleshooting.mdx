@@ -19,32 +19,40 @@ neetoauth doctor --subdomain your-workspace
 
 ## Common errors
 
-When a command fails, it prints an error message to standard error and exits with status 1. For a usage mistake, such as an unknown flag or a missing argument, it adds `Run 'neetoauth --help' for usage.`
+When a command fails, it prints an error message to standard error and exits with status 1. Usage errors such as an unknown flag or a missing argument add `Run 'neetoauth --help' for usage.`
 
 <AccordionGroup>
   <Accordion title="Not authenticated. Run 'neetoauth login' to authenticate.">
     **Problem**: no workspace is signed in. <br />
     **Solution**: run [`neetoauth login --subdomain <name>`](/cli/authentication).
   </Accordion>
-  <Accordion title="Multiple subdomains authenticated (acme, globex); specify --subdomain.">
+  <Accordion title="Multiple subdomains authenticated (acme, beta); specify --subdomain.">
     **Problem**: more than one workspace is signed in, so the target is ambiguous. <br />
-    **Solution**: add `--subdomain <name>` to the command. For `logout`, `--all` is also accepted.
+    **Solution**: add `--subdomain <name>` to the command. For `logout`, `--all` signs out of every workspace.
   </Accordion>
-  <Accordion title='Not authenticated for "foo". Authenticated subdomains: acme, globex.'>
+  <Accordion title='Not authenticated for "foo". Authenticated subdomains: acme, beta.'>
     **Problem**: the `--subdomain` value does not match any signed-in workspace. <br />
     **Solution**: use one of the listed subdomains, or [sign in](/cli/authentication) to the new one.
   </Accordion>
   <Accordion title="Subdomain not found. Please check that you entered the correct subdomain.">
-    **Problem**: `login` could not find a workspace at that subdomain. <br />
-    **Solution**: use only the first part of your workspace URL. For `https://acme.neetoauth.com`, enter `acme`.
+    **Problem**: `neetoauth login` could not find a workspace at `<subdomain>.neetoauth.com`. <br />
+    **Solution**: use the first part of your workspace URL. For `https://spinkart.neetoauth.com`, enter `spinkart`.
   </Accordion>
-  <Accordion title="NeetoAuth CLI authentication timed out after 2 minutes. Please try again.">
-    **Problem**: `login` waited two minutes without the browser sign-in finishing. The related message `Authentication session expired. Please try again.` means the server ended the sign-in session first. <br />
-    **Solution**: run `neetoauth login` again and finish the browser step promptly. If the browser did not open, visit the URL the CLI printed.
+  <Accordion title="Authentication session expired. Please try again.">
+    **Problem**: the browser sign-in was not approved before the session expired. `NeetoAuth CLI authentication timed out after 5 minutes. Please try again.` means the CLI stopped waiting. <br />
+    **Solution**: run `neetoauth login` again and approve the sign-in in the browser. If the browser does not open, visit the URL the CLI prints.
   </Accordion>
   <Accordion title="Could not connect to NeetoAuth. Check your internet connection">
-    **Problem**: the CLI could not reach your workspace. <br />
-    **Solution**: check your network and any proxy, then run `neetoauth doctor` to confirm the API is reachable.
+    **Problem**: the CLI could not reach the API. <br />
+    **Solution**: check your network and run `neetoauth doctor`. If [`NEETOAUTH_BASE_URL`](/cli/authentication#environment-variables) is set, confirm it points at a reachable server.
+  </Accordion>
+  <Accordion title='required flag(s) "xxx" not set'>
+    **Problem**: a required flag was omitted. <br />
+    **Solution**: check the command's [reference page](/cli-reference/overview) or run `neetoauth <command> --help` for the required flags. For commands that accept `--json-file`, a key in the file satisfies the matching flag.
+  </Accordion>
+  <Accordion title="Could not read file <path> / Invalid JSON in <path>">
+    **Problem**: the `--json-file` path does not exist, is not readable, or does not contain a JSON object. <br />
+    **Solution**: check the path and validate the file, for example with `jq . <path>`.
   </Accordion>
   <Accordion title="--email is required.">
     **Problem**: `users create` ran without an email address. <br />
@@ -62,13 +70,13 @@ When a command fails, it prints an error message to standard error and exits wit
     **Problem**: `products enable` or `products disable` was given a name that is not a product in the workspace. <br />
     **Solution**: use the `name` shown by `neetoauth products list`. Names are matched without regard to case.
   </Accordion>
-  <Accordion title="Claude Code not found (~/.claude/ does not exist).">
-    **Problem**: `setup claude` ran on a machine where Claude Code has never been started. <br />
-    **Solution**: install and open Claude Code once, then run `neetoauth setup claude` again.
+  <Accordion title="API error (422): <message>">
+    **Problem**: the server rejected the request. The CLI prints `API error (<status>): <message>`, one line per additional error, and a `Suggestion:` line for common statuses: 401 (sign in again), 403 (no permission), 404 (check the ID), 422 (check required fields with `--help`), and 429 (rate limited, wait and retry). <br />
+    **Solution**: follow the suggestion. For 401, run `neetoauth login` to refresh the session. A 422 usually means the person is already an active member, an `--app` product or role is not offered in the workspace, or the removal would leave the workspace without an owner.
   </Accordion>
-  <Accordion title="API error (422): Unknown product: Foo">
-    **Problem**: the server rejected the request. The CLI prints `API error (<status>): <message>`, taking the message from the `error`, `notice`, or `errors` field of the response, and adds a `Suggestion:` line for common statuses: 401 (sign in again), 403 (no permission), 404 (resource not found), 422 (check the required fields), and 429 (rate limited). Typical causes are inviting someone who is already an active member, an `--app` product or role the workspace does not offer, or removing the last owner. <br />
-    **Solution**: read the message and the suggestion, fix the input, and retry. For a 401, run `neetoauth login` again.
+  <Accordion title="Claude Code not found (~/.claude/ does not exist).">
+    **Problem**: `neetoauth setup claude` requires Claude Code to have been run at least once. <br />
+    **Solution**: install and open Claude Code, then run the command again.
   </Accordion>
 </AccordionGroup>
 
@@ -82,4 +90,4 @@ The CLI acts as the person who signed in, so commands are checked against your o
 neetoauth version
 ```
 
-Prints the CLI version, commit hash, and build date - useful when reporting an issue. Run `neetoauth update` to move to the latest release.
+Prints the CLI version, commit hash, and build date - useful when reporting an issue. To upgrade, run [`neetoauth update`](/cli-reference/utility#update).

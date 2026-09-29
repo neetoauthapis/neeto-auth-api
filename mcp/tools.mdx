@@ -1,19 +1,21 @@
 ---
 title: "Tools"
-description: "Every tool the NeetoAuth MCP server exposes, and what each one reaches."
+description: "Every tool the NeetoAuth MCP server exposes, grouped by resource."
 ---
 
-The server exposes five tools across three resources. Most map to a NeetoAuth v2 API endpoint - follow the links for the full field and error details.
+You do not need these names to use the server. Ask in plain language and the assistant picks the right tool. The list is here for when you want to know exactly what a connection can do. Most tools match a [REST API](/api/introduction) endpoint and link to its reference. The server exposes five tools across three resources.
 
-What a tool returns depends on the credential. With OAuth, every tool runs as the person who approved the connection and is checked against their permissions, so listings come back filtered to what that person can see. With an API key, those checks are skipped and the tools reach the whole workspace.
+Every tool takes an optional `workspace` argument, the subdomain of a connected workspace. Left out, it runs against the workspace the connection was set up with. `ListWorkspaces` reports the values you can pass.
 
-An OAuth connection is also bounded by the permissions ticked while approving it: `CreateUser` needs **Create and update**, and `DeactivateUser` needs **Delete**. A tool whose permission was not granted is refused with a message naming it. See [Authentication](/mcp/authentication).
+What a tool returns depends on the credential. Over [OAuth](/mcp/authentication#oauth-scoped-to-you), lists come back filtered to the permissions of the person who approved the connection, and a record they cannot open is refused rather than returned; an [API key](/mcp/authentication#api-key-scoped-to-the-workspace) reaches the whole workspace. A tool that creates, updates, or deletes is also refused when the connection was not granted the **Create and update** or **Delete** permission. `CreateUser` needs **Create and update**, and `DeactivateUser` needs **Delete**.
 
 ## Workspaces
 
-| Tool | Reads or writes | What it does |
-| --- | --- | --- |
-| `ListWorkspaces` | Reads | Lists the workspaces this connection can access. Pass a returned subdomain as the `workspace` argument of other tools to target that workspace. |
+| Tool | What it does |
+| --- | --- |
+| `ListWorkspaces` | Lists the workspaces this connection can access. Pass a returned subdomain as the `workspace` argument of other tools to target that workspace. |
+
+`ListWorkspaces` has no REST endpoint, which is why it is not linked.
 
 ### ListWorkspaces
 
@@ -26,11 +28,11 @@ Returns `workspaces`, each with `name`, `subdomain` and `default` (whether it is
 
 ## Users
 
-| Tool | Reads or writes | What it does |
-| --- | --- | --- |
-| `ListUsers` | Reads | Lists active members with their email, organization role, and name. Optionally filters by an email substring, matched case-insensitively. [API reference](/api/users/list) |
-| `CreateUser` | Writes | Invites a new member and emails them an invitation, optionally granting roles in specific neeto products at the same time. [API reference](/api/users/add) |
-| `DeactivateUser` | Writes | Deactivates an active member by exact email address and destroys their sessions across every neeto product. [API reference](/api/users/remove) |
+| Tool | What it does |
+| --- | --- |
+| [`ListUsers`](/api/users/list) | Lists active members with their email, organization role, and name. Optionally filters by an email substring, matched case-insensitively. |
+| [`CreateUser`](/api/users/add) | Invites a new member and emails them an invitation, optionally granting roles in specific neeto products at the same time. |
+| [`DeactivateUser`](/api/users/remove) | Deactivates an active member by exact email address and destroys their sessions across every neeto product. |
 
 ### ListUsers
 
@@ -64,9 +66,9 @@ Returns `deactivated` and the `email`. It fails if the user does not exist, is a
 
 ## Products
 
-| Tool | Reads or writes | What it does |
-| --- | --- | --- |
-| `ListProducts` | Reads | Lists the neeto products enabled for the workspace, each with the role names available in it. [API reference](/api/products/list) |
+| Tool | What it does |
+| --- | --- |
+| [`ListProducts`](/api/products/list) | Lists the neeto products enabled for the workspace, each with the role names available in it. |
 
 ### ListProducts
 

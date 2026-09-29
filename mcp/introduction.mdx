@@ -1,6 +1,6 @@
 ---
 title: "NeetoAuth MCP"
-description: "Manage workspace members and product roles from an AI assistant in plain language."
+description: "Manage your NeetoAuth members and product roles from an AI assistant in plain language."
 ---
 
 The NeetoAuth **MCP server** lets your AI assistant manage your workspace from plain-language requests. Ask it to list members, check which products are enabled, invite a new member, or deactivate one who has left, and it works with your NeetoAuth workspace for you.
@@ -26,7 +26,7 @@ The NeetoAuth **MCP server** lets your AI assistant manage your workspace from p
 
 ## MCP vs CLI: which should I use?
 
-NeetoAuth's [CLI](/cli/introduction) reaches the same resources MCP does - workspace members and products. Two gaps are small: `ListUsers` filters by an email substring and the CLI has no flag for that, but the CLI's `--quiet` output piped through `jq` narrows the same list; and the CLI can enable or disable a product, which MCP cannot. Otherwise neither one can grant or revoke access the other cannot, so choose on how the work reaches NeetoAuth.
+NeetoAuth's [CLI](/cli/introduction) reaches the same resources MCP does - workspace members and products. Two gaps are small: `ListUsers` filters by an email substring and the CLI has no flag for that, but the CLI's `--quiet` output piped through `jq` narrows the same list; and the CLI can enable or disable a product, which MCP cannot. Otherwise, neither one can do more than the other, so choose on how the work reaches NeetoAuth.
 
 ### Reach for MCP when
 
@@ -49,21 +49,15 @@ NeetoAuth's [CLI](/cli/introduction) reaches the same resources MCP does - works
 </Tip>
 
 <Warning>
-  Ask your assistant to show you the invitation or the deactivation before it
-  runs. These tools act on your live workspace, and deactivating someone ends
-  their sessions across every neeto product and is reversible only through the
-  NeetoAuth admin UI.
+  Ask your assistant to show you what it plans to do before it invites or
+  deactivates anyone. These tools act on your live workspace. Deactivating
+  someone ends their sessions across every neeto product, and only the NeetoAuth
+  admin UI can undo it.
 </Warning>
 
 ## What you need
 
-- An AI assistant that supports MCP. Setup steps for Claude, ChatGPT, Claude Code, Codex, Cursor, Gemini CLI, VS Code with GitHub Copilot, Windsurf, and Antigravity are on [Connect agent](/mcp/connect).
-- A NeetoAuth API key, but only for workspace scoped access, and for Antigravity, where it is the only documented route. Every other client can sign you in over OAuth instead, which needs nothing beyond the server URL. See [Authentication](/mcp/authentication).
-
-The choice decides what the assistant can reach: an OAuth connection acts as you and sees what you see, while an API key acts as the workspace and sees everything in it.
-
-<Note>
-  An OAuth connection is approved in the browser, much as the [CLI](/cli/authentication) signs you in, and you decide there whether the assistant may create, update, or delete. An API key is the same one the [REST API](/api/authentication) uses, passed as a bearer token from your assistant's config, and it carries every permission for the whole workspace.
-</Note>
+- An AI assistant that supports MCP, such as Claude, ChatGPT, Claude Code, Codex, Cursor, Gemini CLI, VS Code with GitHub Copilot, Windsurf, or Antigravity.
+- A NeetoAuth account. You need an API key only if the assistant must reach the whole workspace, or if you use Antigravity. See [Authentication](/mcp/authentication).
 
 [Connect your assistant](/mcp/connect) to get started.

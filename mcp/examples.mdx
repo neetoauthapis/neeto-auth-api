@@ -1,9 +1,9 @@
 ---
 title: "Examples"
-description: "Prompts that show what the NeetoAuth MCP server can do."
+description: "Prompts to try once your assistant is connected to NeetoAuth."
 ---
 
-Once [connected](/mcp/connect), describe what you want in plain language. The assistant picks the right [tool](/mcp/tools) and fills in the arguments.
+Once [connected](/mcp/connect), ask your assistant in plain language. It picks the right [tools](/mcp/tools), so you do not need to know any tool names. Try prompts like these:
 
 ## Review who has access
 
@@ -44,7 +44,7 @@ The assistant calls `CreateUser` with the organization role and the product gran
   deactivated, or if removing them would leave the workspace without an owner.
 </Warning>
 
-## Chain the two together
+## Chain requests together
 
 > Move Sam from NeetoCal admin to NeetoDesk agent.
 
@@ -57,3 +57,7 @@ There is no update tool, so the assistant does this as a deactivate followed by 
 - Read deactivated members.
 
 For those, use the NeetoAuth admin UI.
+
+<Tip>
+  Ask the assistant to confirm before it invites or deactivates anyone. MCP actions affect your live workspace.
+</Tip>

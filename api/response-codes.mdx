@@ -1,6 +1,6 @@
 ---
 title: "HTTP response codes"
-description: "Learn about the HTTP status codes returned by the API."
+description: "Learn about the HTTP status codes returned by the NeetoAuth API."
 ---
 
 ## Success codes
@@ -45,7 +45,7 @@ description: "Learn about the HTTP status codes returned by the API."
   - Workspace subdomain is incorrect.
 </ResponseField>
 
-<ResponseField name='422 Unprocessable entity'>
+<ResponseField name='422 Unprocessable Entity'>
   The given request could not be processed by the server due to malformed
   request. Check the request body once again.
 </ResponseField>
@@ -80,8 +80,7 @@ When an error occurs, the API returns a JSON response with error details:
 </ResponseField>
 
 <Tip>
-  When debugging API issues, the HTTP status
-  code often provides
-  the first clue about what went wrong. Start by checking the status code before
-  diving into the response body.
+  When debugging API issues, the HTTP status code often provides the first clue
+  about what went wrong. Start by checking the status code before diving into
+  the response body.
 </Tip>

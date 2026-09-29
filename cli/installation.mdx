@@ -41,14 +41,6 @@ The shell and Windows installers download the latest release for your architectu
   </Accordion>
 </AccordionGroup>
 
-## Upgrade
-
-```bash
-neetoauth update
-```
-
-Detects how the CLI was installed and upgrades it to the latest release. A Homebrew install runs `brew update && brew upgrade neetozone/homebrew-tap/neetoauth`, and a shell-script or Windows install re-runs the matching installer. Running `brew upgrade neetoauth` yourself works as well.
-
 ## Verify the installation
 
 Restart your terminal, then run:
@@ -62,6 +54,16 @@ You should see the list of available commands. To check the installed version:
 ```bash
 neetoauth version
 ```
+
+## Upgrade
+
+```bash
+neetoauth update
+```
+
+The command detects how the CLI was installed and runs the matching upgrade: `brew update && brew upgrade neetozone/tap/neetoauth` for a Homebrew install, the shell installer for other macOS and Linux installs, and the PowerShell installer on Windows. It prints the command it runs and exits non-zero if that command fails. You can also run the install command for your platform again. See [`neetoauth update`](/cli-reference/utility#update).
+
+After an upgrade, re-run `neetoauth completion <shell>` and any `neetoauth setup` command you use so their files match the new version.
 
 <Tip>
   Next, [sign in](/cli/authentication) to a workspace and run `neetoauth doctor`
