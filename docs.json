@@ -71,6 +71,7 @@
             "pages": [
               "cli/introduction",
               "cli/installation",
+              "cli/workspace-subdomain",
               "cli/authentication",
               "cli/output-formats",
               "cli/ai-assistants",
@@ -98,6 +99,7 @@
             "icon": "rocket",
             "pages": [
               "mcp/introduction",
+              "mcp/workspace-subdomain",
               "mcp/authentication",
               "mcp/connect",
               "mcp/examples",
